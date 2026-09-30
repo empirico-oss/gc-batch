@@ -1,0 +1,2043 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://empirico-oss.github.io/gc-batch/main/guides/troubleshooting/">
+      
+      
+        <link rel="prev" href="../examples/">
+      
+      
+        <link rel="next" href="../../development/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Troubleshooting - gc-batch</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#troubleshooting" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="gc-batch" class="md-header__button md-logo" aria-label="gc-batch" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            gc-batch
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Troubleshooting
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/empirico-oss/gc-batch" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="gc-batch" class="md-nav__button md-logo" aria-label="gc-batch" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    gc-batch
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/empirico-oss/gc-batch" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commands Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mounts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input/Output Mounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../local-ssd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local SSD Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labels/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Label Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example Workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Not Found
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wrong-docker-image-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrong Docker Image Platform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-stuck-in-queued-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Stuck in QUEUED State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permission-denied-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permission Denied Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gcs-mount-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GCS Mount Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-ssd-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local SSD Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-failed-how-to-debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Failed - How to Debug
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-failed-but-there-are-no-logs-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Failed but There Are No Logs At All
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permission-denied-for-all-log-views" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Permission denied for all log views"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Help
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Help">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Help
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check Version
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#useful-gcloud-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Useful GCloud Commands
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/developing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>gc_batch
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>gc_batch
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    gc_batch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/batch_logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>batch_logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>client
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/entrypoint/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>entrypoint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/gcs_logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>gcs_logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/google_utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>google_utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/logger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>logger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_9" id="__nav_4_1_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/models/batch_config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>batch_config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/models/job_request/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>job_request
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/models/job_result/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>job_result
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Common Issues
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Common Issues">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-not-found" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Not Found
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wrong-docker-image-platform" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Wrong Docker Image Platform
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-stuck-in-queued-state" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Stuck in QUEUED State
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#authentication-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authentication Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permission-denied-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Permission Denied Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#gcs-mount-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        GCS Mount Issues
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#local-ssd-errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Local SSD Errors
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-failed-how-to-debug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Failed - How to Debug
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#job-failed-but-there-are-no-logs-at-all" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Job Failed but There Are No Logs At All
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#permission-denied-for-all-log-views" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        "Permission denied for all log views"
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting Help
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting Help">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#command-help" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Command Help
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#check-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Check Version
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#useful-gcloud-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Useful GCloud Commands
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/empirico-oss/gc-batch/edit/master/docs/guides/troubleshooting.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="troubleshooting">Troubleshooting</h1>
+<p>Common issues and solutions when using gc-batch.</p>
+<h2 id="common-issues">Common Issues</h2>
+<h3 id="command-not-found">Command Not Found</h3>
+<p><strong>Symptom:</strong> <code>gc-batch: command not found</code> after installing.</p>
+<p><strong>Cause:</strong> The install location is not on your <code>PATH</code>.</p>
+<p><strong>Solution:</strong> Add the uv tool directory to your <code>PATH</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$HOME</span><span class="s2">/.local/bin:</span><span class="nv">$PATH</span><span class="s2">"</span>
+</code></pre></div>
+<p>Or run it through uv without installing:</p>
+<div class="highlight"><pre><span></span><code>uv<span class="w"> </span>run<span class="w"> </span>gc-batch<span class="w"> </span>--help
+</code></pre></div>
+<h3 id="wrong-docker-image-platform">Wrong Docker Image Platform</h3>
+<p><strong>Symptom:</strong> Job fails with error in logs:
+<div class="highlight"><pre><span></span><code>The requested image's platform (linux/arm64/v8) does not match the detected 
+host platform (linux/amd64/v4) and no specific platform was requested
+</code></pre></div></p>
+<p><strong>Cause:</strong> Your Docker image was built for ARM architecture (common on Apple Silicon Macs) but Google Cloud Batch runs on AMD64/x86 VMs.</p>
+<p><strong>Solution:</strong> Rebuild your Docker image for the correct platform:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>build<span class="w"> </span>--platform<span class="w"> </span>linux/amd64<span class="w"> </span>-t<span class="w"> </span>your-image:tag<span class="w"> </span>.
+</code></pre></div>
+<p>Or use buildx for multi-platform builds:</p>
+<div class="highlight"><pre><span></span><code>docker<span class="w"> </span>buildx<span class="w"> </span>build<span class="w"> </span>--platform<span class="w"> </span>linux/amd64<span class="w"> </span>-t<span class="w"> </span>your-image:tag<span class="w"> </span>--push<span class="w"> </span>.
+</code></pre></div>
+<h3 id="job-stuck-in-queued-state">Job Stuck in QUEUED State</h3>
+<p><strong>Symptom:</strong> Job stays in <code>QUEUED</code> status for a long time.</p>
+<p><strong>Possible Causes:</strong></p>
+<ol>
+<li><strong>Insufficient quota</strong> - Check your GCP quota for the region and machine type</li>
+<li><strong>Resource unavailability</strong> - The requested machine type may not be available in the zone</li>
+<li><strong>SPOT VM shortage</strong> - If using <code>--provisioning-model SPOT</code>, capacity may be limited</li>
+</ol>
+<p><strong>Solutions:</strong></p>
+<ul>
+<li>Try a different machine type</li>
+<li>Try a different region</li>
+<li>Use <code>STANDARD</code> provisioning instead of <code>SPOT</code></li>
+<li>Check GCP Console for quota issues</li>
+</ul>
+<h3 id="authentication-errors">Authentication Errors</h3>
+<p><strong>Symptom:</strong> Commands fail with authentication errors.</p>
+<p><strong>Solution:</strong> Re-authenticate with Google Cloud:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Login to Google Cloud</span>
+gcloud<span class="w"> </span>auth<span class="w"> </span>login
+
+<span class="c1"># Set application default credentials</span>
+gcloud<span class="w"> </span>auth<span class="w"> </span>application-default<span class="w"> </span>login
+
+<span class="c1"># Verify your account</span>
+gcloud<span class="w"> </span>auth<span class="w"> </span>list
+gcloud<span class="w"> </span>config<span class="w"> </span>get-value<span class="w"> </span>account
+</code></pre></div>
+<h3 id="permission-denied-errors">Permission Denied Errors</h3>
+<p><strong>Symptom:</strong> Job creation fails with permission errors.</p>
+<p><strong>Possible Causes:</strong></p>
+<ol>
+<li>Missing Batch API permissions</li>
+<li>Missing Storage permissions for GCS buckets</li>
+<li>Service account doesn't have required roles</li>
+</ol>
+<p><strong>Solutions:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Enable the Batch API</span>
+gcloud<span class="w"> </span>services<span class="w"> </span><span class="nb">enable</span><span class="w"> </span>batch.googleapis.com
+
+<span class="c1"># Check your permissions</span>
+gcloud<span class="w"> </span>projects<span class="w"> </span>get-iam-policy<span class="w"> </span>YOUR_PROJECT_ID
+</code></pre></div>
+<p>Required roles:
+- <code>roles/batch.jobsEditor</code> - Create and manage Batch jobs
+- <code>roles/storage.objectViewer</code> - Read from GCS buckets
+- <code>roles/storage.objectCreator</code> - Write to GCS buckets</p>
+<h3 id="gcs-mount-issues">GCS Mount Issues</h3>
+<p><strong>Symptom:</strong> Job can't read/write to mounted GCS buckets.</p>
+<p><strong>Possible Causes:</strong></p>
+<ol>
+<li>Bucket doesn't exist</li>
+<li>Incorrect bucket path</li>
+<li>Permission issues</li>
+<li>Requester-pays bucket without billing project</li>
+</ol>
+<p><strong>Solutions:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Verify bucket exists and you have access</span>
+gsutil<span class="w"> </span>ls<span class="w"> </span>gs://your-bucket/path/
+
+<span class="c1"># For requester-pays buckets, specify billing project</span>
+gc-batch<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-name<span class="w"> </span>my-job<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--docker-image<span class="w"> </span>gcr.io/my-project/my-image:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--command<span class="w"> </span><span class="s2">"python /app/main.py"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input-bucket<span class="w"> </span>requester-pays-bucket/data<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--input-billing-project<span class="w"> </span>your-billing-project
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">Don't mount entire buckets</p>
+<p>Mount specific subfolders, not entire buckets:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Good</span>
+--input-bucket<span class="w"> </span>my-bucket/project/input-data
+
+<span class="c1"># Avoid</span>
+--input-bucket<span class="w"> </span>my-bucket
+</code></pre></div>
+</div>
+<h3 id="local-ssd-errors">Local SSD Errors</h3>
+<p><strong>Symptom:</strong> Job fails when using local SSD options.</p>
+<p><strong>Possible Causes:</strong></p>
+<ol>
+<li>Invalid SSD size (must be multiple of 375 GB)</li>
+<li>LSSD machine type with <code>--local-ssd-size-gb</code> specified</li>
+<li>Machine type doesn't support local SSD</li>
+</ol>
+<p><strong>Solutions:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Ensure size is multiple of 375</span>
+--local-ssd-size-gb<span class="w"> </span><span class="m">375</span><span class="w">   </span><span class="c1"># ✓</span>
+--local-ssd-size-gb<span class="w"> </span><span class="m">750</span><span class="w">   </span><span class="c1"># ✓</span>
+--local-ssd-size-gb<span class="w"> </span><span class="m">400</span><span class="w">   </span><span class="c1"># ✗ Error!</span>
+
+<span class="c1"># For LSSD machine types, DON'T specify size</span>
+gc-batch<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-name<span class="w"> </span>lssd-job<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--docker-image<span class="w"> </span>gcr.io/my-project/my-image:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--command<span class="w"> </span><span class="s2">"python /app/main.py"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--machine-type<span class="w"> </span>c4-standard-8-lssd<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--local-ssd-mount-path<span class="w"> </span>/mnt/fast<span class="w">  </span><span class="c1"># Only specify mount path</span>
+</code></pre></div>
+<h3 id="job-failed-how-to-debug">Job Failed - How to Debug</h3>
+<p><strong>Steps to debug a failed job:</strong></p>
+<ol>
+<li>
+<p><strong>Check status with error details:</strong>
+   <div class="highlight"><pre><span></span><code>gc-batch<span class="w"> </span>status<span class="w"> </span>--job-name<span class="w"> </span>your-job-name<span class="w"> </span>--full
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>View logs:</strong>
+   <div class="highlight"><pre><span></span><code><span class="c1"># Print to console</span>
+gc-batch<span class="w"> </span>logs<span class="w"> </span>print<span class="w"> </span>--job-name<span class="w"> </span>your-job-name
+
+<span class="c1"># View in Cloud Console (more features)</span>
+gc-batch<span class="w"> </span>logs<span class="w"> </span>url<span class="w"> </span>--job-name<span class="w"> </span>your-job-name
+
+<span class="c1"># View only errors</span>
+gc-batch<span class="w"> </span>logs<span class="w"> </span>url<span class="w"> </span>--job-name<span class="w"> </span>your-job-name<span class="w"> </span>--severity<span class="w"> </span>ERROR
+</code></pre></div></p>
+</li>
+<li>
+<p><strong>Download logs for analysis:</strong>
+   <div class="highlight"><pre><span></span><code>gc-batch<span class="w"> </span>logs<span class="w"> </span>download<span class="w"> </span>--job-name<span class="w"> </span>your-job-name<span class="w"> </span>--download-dir<span class="w"> </span>./debug-logs
+</code></pre></div></p>
+</li>
+</ol>
+<p>If those commands report no logs, the next two sections cover the two reasons why.</p>
+<h3 id="job-failed-but-there-are-no-logs-at-all">Job Failed but There Are No Logs At All</h3>
+<p><strong>Symptom:</strong> the job is <code>FAILED</code>, <code>status</code> says only something like
+<code>Task state is updated from RUNNING to FAILED … with exit code 1</code>, and
+<code>gc-batch logs print</code> finds nothing — for a Cloud Logging job <em>and</em> for a
+<code>--logs-bucket</code> job.</p>
+<p><strong>Cause:</strong> the container never started, so it produced no output to collect. The
+usual reason is an image that could not be pulled: a bad tag, a registry the job's
+network cannot reach, or missing permission on the image. When this happens Batch
+does not write any log objects to a <code>--logs-bucket</code> path either, because the failure
+precedes the container.</p>
+<p><strong>Batch does not report the reason.</strong> The image name appears nowhere in the failure
+text, and the job resource contains no "manifest unknown", "not found", or "pull"
+message — the only failure detail is an exit code. <code>gc-batch status</code> therefore adds a
+<em>clearly labelled inference</em> when a <code>FAILED</code> job produced no log entries at all,
+naming the image so you can check it. That is a deduction from the absence of logs,
+not something Batch told us.</p>
+<p><strong>What to check:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Confirm the exact image reference the job was given</span>
+gc-batch<span class="w"> </span>status<span class="w"> </span>--job-name<span class="w"> </span>your-job-name<span class="w"> </span>--full<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>imageUri
+
+<span class="c1"># Confirm that reference exists and you can pull it</span>
+gcloud<span class="w"> </span>container<span class="w"> </span>images<span class="w"> </span>describe<span class="w"> </span>IMAGE_URI
+</code></pre></div>
+<p>Then confirm the job's network can reach that registry at all. A pull that cannot
+reach its registry fails in exactly the same way as a bad tag, so the two are worth
+separating: if a job using a <em>known-good</em> image from the same registry succeeds, the
+registry is reachable and the problem is the reference.</p>
+<p>Jobs created with <code>--job-profile all-of-us</code> run on VMs with no external IP address,
+but that does not restrict you to Google registries: both <code>gcr.io</code> and Docker Hub
+(<code>docker.io/library/debian:stable-slim</code>) have been confirmed to pull successfully
+from such a VM in the All of Us Researcher Workbench. If a pull fails there, suspect
+the image reference before the network.</p>
+<div class="admonition warning">
+<p class="admonition-title">Also check the entrypoint</p>
+<p><code>gc-batch</code> runs your command through <code>/bin/bash -c</code>. An image without
+<code>/bin/bash</code> — <code>busybox</code> and most <code>alpine</code>-based images — fails at container start
+for the same reason and looks identical in <code>status</code>. Use a Debian- or
+Ubuntu-based image, or one that ships bash.</p>
+</div>
+<h3 id="permission-denied-for-all-log-views">"Permission denied for all log views"</h3>
+<p><strong>Symptom:</strong> <code>gc-batch logs print</code> exits non-zero with
+<code>403 Permission denied for all log views</code>, and the Cloud Console logs page is empty
+too.</p>
+<p><strong>Cause:</strong> the identity running <code>gc-batch</code> cannot read Cloud Logging in that project.
+This is the normal state in restricted environments — notably the All of Us
+Researcher Workbench, where the workspace pet service account has no log view
+access at all — and no filter or time-range change will help.</p>
+<p><strong>Solution:</strong> have Batch write logs to a GCS bucket instead, which needs no Cloud
+Logging access. This is a <em>creation-time</em> choice, so it cannot be applied to jobs
+that have already run:</p>
+<div class="highlight"><pre><span></span><code>gc-batch<span class="w"> </span>create<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--job-name<span class="w"> </span>my-job<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--docker-image<span class="w"> </span>gcr.io/my-project/my-image:latest<span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--command<span class="w"> </span><span class="s2">"python /app/main.py"</span><span class="w"> </span><span class="se">\</span>
+<span class="w">  </span>--logs-bucket<span class="w"> </span>my-bucket/batch-logs
+</code></pre></div>
+<p><code>gc-batch logs print</code> and <code>logs download</code> detect such jobs and read the bucket
+automatically. See <a href="../mounts/">Input/Output Mounts</a> for the object layout, and note
+that <code>logs filter</code> and <code>logs url</code> still produce Cloud Logging queries, which will
+match nothing for these jobs.</p>
+<div class="admonition tip">
+<p class="admonition-title">Multi-task jobs write one set of objects per task</p>
+<p>Objects are named <code>{stream}-{job-uid}-group{GROUP}-{TASK}.log</code>, so a job with
+<code>--task-count 2</code> writes six: <code>stdout-</code>, <code>stderr-</code>, and <code>output-</code> for
+<code>group0-0</code> and again for <code>group0-1</code>. <code>output-</code> is the superset and also contains
+the Batch agent's own lines. If you are looking for one task's output, filter by
+its <code>group{GROUP}-{TASK}</code> suffix.</p>
+</div>
+<h2 id="getting-help">Getting Help</h2>
+<h3 id="command-help">Command Help</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># General help</span>
+gc-batch<span class="w"> </span>--help
+
+<span class="c1"># Command-specific help</span>
+gc-batch<span class="w"> </span>create<span class="w"> </span>--help
+gc-batch<span class="w"> </span>list-jobs<span class="w"> </span>--help
+gc-batch<span class="w"> </span>status<span class="w"> </span>--help
+gc-batch<span class="w"> </span>logs<span class="w"> </span>--help
+gc-batch<span class="w"> </span>cancel<span class="w"> </span>--help
+</code></pre></div>
+<h3 id="check-version">Check Version</h3>
+<div class="highlight"><pre><span></span><code>gc-batch<span class="w"> </span>--version
+</code></pre></div>
+<h3 id="useful-gcloud-commands">Useful GCloud Commands</h3>
+<div class="highlight"><pre><span></span><code><span class="c1"># Check Batch API status</span>
+gcloud<span class="w"> </span>services<span class="w"> </span>list<span class="w"> </span>--enabled<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>batch
+
+<span class="c1"># List Batch jobs directly via gcloud</span>
+gcloud<span class="w"> </span>batch<span class="w"> </span><span class="nb">jobs</span><span class="w"> </span>list<span class="w"> </span>--location<span class="o">=</span>us-central1
+
+<span class="c1"># Describe a job</span>
+gcloud<span class="w"> </span>batch<span class="w"> </span><span class="nb">jobs</span><span class="w"> </span>describe<span class="w"> </span>JOB_NAME<span class="w"> </span>--location<span class="o">=</span>us-central1
+</code></pre></div>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.action.edit", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "default": "stable", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
