@@ -1,0 +1,61 @@
+name: Bug report
+description: Report something that doesn't work as expected.
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include credentials, access tokens, cloud project identifiers, or
+        participant/patient data anywhere in this report. Redact them from any
+        command output before pasting it.
+
+  - type: input
+    id: version
+    attributes:
+      label: gc-batch version
+      description: Output of `gc-batch --version`.
+      placeholder: "gc-batch, version 0.1.0"
+    validations:
+      required: true
+
+  - type: input
+    id: python-version
+    attributes:
+      label: Python version
+      placeholder: "3.11.9"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      options:
+        - All of Us Researcher Workbench
+        - Other GCP environment
+    validations:
+      required: true
+
+  - type: textarea
+    id: command
+    attributes:
+      label: Command run
+      description: The exact `gc-batch` command or Python code that triggered the issue.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: error-output
+    attributes:
+      label: Error output
+      description: Full error output or traceback, with any credentials or identifiers redacted.
+      render: shell
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context
+      description: Anything else that might help, such as what you expected to happen instead.

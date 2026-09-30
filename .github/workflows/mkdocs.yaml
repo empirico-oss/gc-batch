@@ -1,0 +1,106 @@
+name: Build and Deploy Docs
+
+# Published docs track releases: releasing deploys that version and moves the
+# `stable` alias. Use the manual trigger to publish a branch preview under an
+# alias of your choosing.
+#
+# `released` rather than `published` on purpose: `published` also fires for
+# pre-releases, which would point `stable` at a release candidate. `released`
+# fires only for non-prerelease publishes, and again if a pre-release is later
+# promoted to a full release.
+on:
+  release:
+    types: [released]
+  workflow_dispatch:
+    inputs:
+      alias:
+        description: Alias name for this branch
+        type: string
+        default: ""
+
+# mike pushes to the `gh-pages` branch, so two deploys running at once race on
+# that push and one of them fails. Serialize every deploy, and never cancel a
+# run mid-push.
+concurrency:
+  group: docs-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # uv-dynamic-versioning derives the package version from git tag history,
+          # and mkdocstrings imports the package to render the API reference. A
+          # shallow branch checkout has no tags, so the docs would report 0.0.0.
+          fetch-depth: 0
+
+      - name: Configure Git Credentials
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email github-actions[bot]@users.noreply.github.com
+
+      - name: Setup python
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version-file: "pyproject.toml"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - run: echo "cache_id=$(date --utc '+%V')" >> $GITHUB_ENV
+
+      - uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          key: mkdocs-material-${{ env.cache_id }}
+          path: .cache
+          restore-keys: |
+            mkdocs-material-
+
+      - name: Fetch gh-pages if it exists
+        run: |
+          if git ls-remote --exit-code --heads origin gh-pages >/dev/null 2>&1; then
+            git fetch origin gh-pages:gh-pages
+          else
+            echo "No gh-pages branch yet; mike will create it on first deploy."
+          fi
+
+      - name: Deploy with mike
+        shell: bash
+        # Passed as env rather than interpolated into the script: `inputs.alias`
+        # and tag names are attacker-controlled text on a public repo, and
+        # inlining them into bash is a script-injection hole.
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          ALIAS_INPUT: ${{ inputs.alias }}
+        run: |
+          set -euo pipefail
+          mike=(uv run --frozen --group docs mike)
+
+          if [ "$EVENT_NAME" = "release" ]; then
+            if [ -z "$RELEASE_TAG" ]; then
+              echo "::error::Release event carried no tag_name; cannot pick a docs version."
+              exit 1
+            fi
+            # v1.2.3 -> 1.2.3, so the version switcher reads as plain semver.
+            version="${RELEASE_TAG#v}"
+            "${mike[@]}" deploy --push --update-aliases "$version" stable
+            # Make https://<site>/ redirect to the newest release instead of
+            # serving a bare directory listing. Idempotent.
+            "${mike[@]}" set-default --push stable
+          else
+            # Manual preview deploy: branch name, slashes flattened for the URL.
+            args=("${REF_NAME//\//.}")
+            if [ -n "$ALIAS_INPUT" ]; then
+              args+=("$ALIAS_INPUT")
+            fi
+            "${mike[@]}" deploy --push --update-aliases "${args[@]}"
+          fi

@@ -1,0 +1,83 @@
+# yaml-language-server: $schema=https://squidfunk.github.io/mkdocs-material/schema.json
+site_name: gc-batch
+repo_url: https://github.com/empirico-oss/gc-batch
+site_url: https://empirico-oss.github.io/gc-batch
+
+theme:
+  name: material
+  features:
+    - content.action.edit
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+nav:
+  - Home: index.md
+  - Guides:
+      - Quick Start: guides/quick-start.md
+      - Commands Reference: guides/commands.md
+      - Python API: guides/python-api.md
+      - Input/Output Mounts: guides/mounts.md
+      - Local SSD Storage: guides/local-ssd.md
+      - Label Management: guides/labels.md
+      - Configuration: guides/configuration.md
+      - Example Workflows: guides/examples.md
+      - Troubleshooting: guides/troubleshooting.md
+  - Development:
+      - Getting Started: development/index.md
+      - Development Guide: development/developing.md
+      - Documentation: development/docs.md
+
+plugins:
+  - mike: {}
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths:
+            - ./src/gc_batch
+          options:
+            docstring_style: google
+            show_if_no_docstring: true
+  - api-autonav:
+      on_implicit_namespace_package: "warn"
+      modules:
+        - ./src/gc_batch
+  # This plugin _must_ be loaded after mkdocstrings to enable using macros in docstrings
+  - macros:
+      module_name: include/mkdocs/macros
+  - search
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+
+extra:
+  version:
+    provider: mike
+    alias: true
+    # Only `stable` is ever published (see .github/workflows/mkdocs.yaml), so it
+    # is the sole default. Listing an alias that no deploy creates would make
+    # Material's "outdated version" banner misfire.
+    default: stable

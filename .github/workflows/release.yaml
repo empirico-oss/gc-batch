@@ -1,0 +1,106 @@
+name: Release
+
+# Publishing to PyPI happens when a GitHub Release is published. The tag on that
+# release is the single source of truth for the version: `uv-dynamic-versioning`
+# derives the package version from git, and the `verify` job below refuses to
+# publish if the two disagree.
+#
+# The `workflow_dispatch` path publishes to TestPyPI instead. Run it from a tag
+# ref, not a branch: off-tag builds carry PEP 440 local version metadata
+# (`+branch.sha`), which neither index accepts.
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  # Never cancel a release mid-flight; a partial upload cannot be retried under
+  # the same version number.
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build and verify distributions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Required. `uv-dynamic-versioning` reads tags and `tag-branch`
+          # (remotes/origin/main) from git history. Under the default shallow
+          # checkout neither is present, and it silently falls back to
+          # `fallback-version` instead of failing -- publishing a wrong version
+          # that PyPI will never let us reuse.
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Build sdist and wheel
+        run: uv build --out-dir dist
+
+      - name: Verify version matches the release tag
+        env:
+          # Empty for workflow_dispatch; the script only enforces a match when set.
+          RELEASE_TAG: ${{ github.event_name == 'release' && github.event.release.tag_name || '' }}
+        run: uv run --with packaging python .github/scripts/verify_release_tag.py
+
+      - name: Check distribution metadata
+        run: uv run --with twine twine check --strict dist/*
+
+      - name: Upload distributions
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  pypi:
+    name: Publish to PyPI
+    if: github.event_name == 'release'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/gc-batch
+    permissions:
+      # Required for Trusted Publishing; no API token is stored.
+      id-token: write
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+
+  testpypi:
+    name: Publish to TestPyPI
+    if: github.event_name == 'workflow_dispatch'
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: testpypi
+      url: https://test.pypi.org/p/gc-batch
+    permissions:
+      id-token: write
+    steps:
+      - name: Download distributions
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
+        with:
+          name: dist
+          path: dist/
+
+      - name: Publish
+        uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
+        with:
+          repository-url: https://test.pypi.org/legacy/
