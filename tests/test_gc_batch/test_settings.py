@@ -133,7 +133,7 @@ class TestRemovedSettingsAreIgnored:
     def test_stale_config_file_sections_do_not_raise(self, tmp_path: Path):
         """A config file still carrying the removed sections must load, not raise.
 
-        `run_label_keys` and `dashboards` were removed in 0.1.0. `extra="ignore"`
+        `run_label_keys` and `dashboards` were removed in 0.2.0. `extra="ignore"`
         means an old config file keeps working instead of failing validation.
         """
         config_file = tmp_path / "gc-batch.toml"

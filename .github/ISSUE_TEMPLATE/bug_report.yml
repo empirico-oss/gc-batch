@@ -14,7 +14,7 @@ body:
     attributes:
       label: gc-batch version
       description: Output of `gc-batch --version`.
-      placeholder: "gc-batch, version 0.1.0"
+      placeholder: "gc-batch, version 0.2.0"
     validations:
       required: true
 
