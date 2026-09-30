@@ -1,0 +1,2134 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://empirico-oss.github.io/gc-batch/0.2.0/guides/python-api/">
+      
+      
+        <link rel="prev" href="../commands/">
+      
+      
+        <link rel="next" href="../mounts/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.7">
+    
+    
+      
+        <title>Python API - gc-batch</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#python-api" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <div data-md-color-scheme="default" data-md-component="outdated" hidden>
+        
+      </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="gc-batch" class="md-header__button md-logo" aria-label="gc-batch" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            gc-batch
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Python API
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/empirico-oss/gc-batch" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="gc-batch" class="md-nav__button md-logo" aria-label="gc-batch" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    gc-batch
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/empirico-oss/gc-batch" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M439.6 236.1 244 40.5c-5.4-5.5-12.8-8.5-20.4-8.5s-15 3-20.4 8.4L162.5 81l51.5 51.5c27.1-9.1 52.7 16.8 43.4 43.7l49.7 49.7c34.2-11.8 61.2 31 35.5 56.7-26.5 26.5-70.2-2.9-56-37.3L240.3 199v121.9c25.3 12.5 22.3 41.8 9.1 55-6.4 6.4-15.2 10.1-24.3 10.1s-17.8-3.6-24.3-10.1c-17.6-17.6-11.1-46.9 11.2-56v-123c-20.8-8.5-24.6-30.7-18.6-45L142.6 101 8.5 235.1C3 240.6 0 247.9 0 255.5s3 15 8.5 20.4l195.6 195.7c5.4 5.4 12.7 8.4 20.4 8.4s15-3 20.4-8.4l194.7-194.7c5.4-5.4 8.4-12.8 8.4-20.4s-3-15-8.4-20.4"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../quick-start/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Quick Start
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../commands/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Commands Reference
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Python API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#submitting-a-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Submitting a job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Labels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#waiting-for-a-job-to-finish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Waiting for a job to finish
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#listing-and-filtering-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listing and filtering jobs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cancelling-a-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cancelling a job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Logs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#choosing-the-destination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing the destination
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mounts-local-ssd-and-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mounts, local SSD, and environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings-and-job-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Settings and job profiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fanning-out-over-many-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fanning out over many inputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full API reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../mounts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Input/Output Mounts
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../local-ssd/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Local SSD Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../labels/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Label Management
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Example Workflows
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../troubleshooting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Troubleshooting
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Development
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/developing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Development Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../development/docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1" id="__nav_4_1_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>gc_batch
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_1_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>gc_batch
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    gc_batch
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/batch_logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>batch_logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/client/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>client
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/constants/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>constants
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/entrypoint/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>entrypoint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/gcs_logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>gcs_logging
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/google_utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>google_utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/logger/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>logger
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_1_9" >
+        
+          
+          <label class="md-nav__link" for="__nav_4_1_9" id="__nav_4_1_9_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>models
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_4_1_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_1_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>models
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    models
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/models/batch_config/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>batch_config
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/models/job_request/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>job_request
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/models/job_result/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>job_result
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>settings
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/gc_batch/utils/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <code class="doc-symbol doc-symbol-nav doc-symbol-module"></code>utils
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#submitting-a-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Submitting a job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#labels" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Labels
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#waiting-for-a-job-to-finish" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Waiting for a job to finish
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#listing-and-filtering-jobs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Listing and filtering jobs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#cancelling-a-job" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cancelling a job
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Logs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Logs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#choosing-the-destination" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Choosing the destination
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mounts-local-ssd-and-environment" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Mounts, local SSD, and environment
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#settings-and-job-profiles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Settings and job profiles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#fanning-out-over-many-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Fanning out over many inputs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#errors" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Errors
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#full-api-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Full API reference
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+    <a href="https://github.com/empirico-oss/gc-batch/edit/master/docs/guides/python-api.md" title="Edit this page" class="md-content__button md-icon" rel="edit">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 20H6V4h7v5h5v3.1l2-2V8l-6-6H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h4zm10.2-7c.1 0 .3.1.4.2l1.3 1.3c.2.2.2.6 0 .8l-1 1-2.1-2.1 1-1c.1-.1.2-.2.4-.2m0 3.9L14.1 23H12v-2.1l6.1-6.1z"/></svg>
+    </a>
+  
+  
+
+
+<h1 id="python-api">Python API</h1>
+<p>Everything the <code>gc-batch</code> CLI does is also available as a Python library, so you can
+submit and monitor Batch jobs from a script, a notebook, or your own orchestration
+code without shelling out to the CLI.</p>
+<p>The pieces you will use most:</p>
+<table>
+<thead>
+<tr>
+<th>Object</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="../../reference/gc_batch/client/"><code>GCBatchClient</code></a></td>
+<td>Create, list, inspect, and cancel jobs</td>
+</tr>
+<tr>
+<td><a href="../../reference/gc_batch/models/batch_config/"><code>BatchClientConfig</code></a></td>
+<td>Project, location, and deployment settings for the client</td>
+</tr>
+<tr>
+<td><a href="../../reference/gc_batch/models/job_request/"><code>BatchJobConfig</code></a></td>
+<td>Machine type, disks, mounts, networking, environment</td>
+</tr>
+<tr>
+<td><a href="../../reference/gc_batch/models/job_request/"><code>JobRequest</code></a></td>
+<td>One job: name, image, command, config, labels</td>
+</tr>
+<tr>
+<td><a href="../../reference/gc_batch/settings/"><code>GCBatchSettings</code></a></td>
+<td>Deployment values (job-name prefix, job profiles)</td>
+</tr>
+<tr>
+<td><a href="../../reference/gc_batch/batch_logging/"><code>BatchLogging</code></a></td>
+<td>Read job logs from Cloud Logging</td>
+</tr>
+<tr>
+<td><a href="../../reference/gc_batch/gcs_logging/"><code>GCSLogReader</code></a></td>
+<td>Read job logs written to a GCS bucket</td>
+</tr>
+</tbody>
+</table>
+<h2 id="submitting-a-job">Submitting a job</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">gc_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchClientConfig</span><span class="p">,</span> <span class="n">BatchJobConfig</span><span class="p">,</span> <span class="n">GCBatchClient</span><span class="p">,</span> <span class="n">JobRequest</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">GCBatchClient</span><span class="p">(</span><span class="n">BatchClientConfig</span><span class="p">(</span><span class="n">project_id</span><span class="o">=</span><span class="s2">"my-project"</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s2">"us-central1"</span><span class="p">))</span>
+
+<span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_job</span><span class="p">(</span>
+    <span class="n">JobRequest</span><span class="p">(</span>
+        <span class="n">job_name</span><span class="o">=</span><span class="s2">"hello-world"</span><span class="p">,</span>
+        <span class="n">docker_image</span><span class="o">=</span><span class="s2">"python:3.12-slim"</span><span class="p">,</span>
+        <span class="n">command</span><span class="o">=</span><span class="s2">"python -c 'print(</span><span class="se">\"</span><span class="s2">Hello from Batch</span><span class="se">\"</span><span class="s2">)'"</span><span class="p">,</span>
+        <span class="n">config</span><span class="o">=</span><span class="n">BatchJobConfig</span><span class="p">(</span>
+            <span class="n">machine_type</span><span class="o">=</span><span class="s2">"e2-standard-2"</span><span class="p">,</span>
+            <span class="n">boot_disk_type</span><span class="o">=</span><span class="s2">"pd-balanced"</span><span class="p">,</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># projects/my-project/locations/us-central1/jobs/hello-world-1758412800</span>
+</code></pre></div>
+<p><code>machine_type</code> and <code>boot_disk_type</code> are the only required fields on
+<code>BatchJobConfig</code>. Disk-type support varies by machine generation, so let
+<code>MachineTypeHelper</code> pick one if you are generating configs programmatically:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">gc_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">MachineTypeHelper</span>
+
+<span class="n">machine_type</span> <span class="o">=</span> <span class="s2">"c4-standard-8"</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">BatchJobConfig</span><span class="p">(</span>
+    <span class="n">machine_type</span><span class="o">=</span><span class="n">machine_type</span><span class="p">,</span>
+    <span class="n">boot_disk_type</span><span class="o">=</span><span class="n">MachineTypeHelper</span><span class="o">.</span><span class="n">get_default_disk_type</span><span class="p">(</span><span class="n">machine_type</span><span class="p">),</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Job names get a timestamp</p>
+<p><code>create_job</code> appends a Unix timestamp to <code>job_name</code> (and prepends
+<code>settings.job_name_prefix</code> when configured), so the submitted name is not the
+one you passed. Read the real name off the returned job — either
+<code>job.name</code> for the full resource path or <code>job.name.split("/")[-1]</code> for the
+short name that <code>get_job</code> and the CLI expect.</p>
+</div>
+<h2 id="labels">Labels</h2>
+<p><code>create_job</code> always sets four labels: <code>job-name</code>, <code>created-using</code> (from
+<code>settings.created_using_label</code>), <code>created-by</code>, and <code>created-at</code>. Anything in
+<code>JobRequest.labels</code> is merged on top, so an explicit label wins over the default.</p>
+<div class="highlight"><pre><span></span><code><span class="n">request</span> <span class="o">=</span> <span class="n">JobRequest</span><span class="p">(</span>
+    <span class="n">job_name</span><span class="o">=</span><span class="s2">"nightly-rollup"</span><span class="p">,</span>
+    <span class="n">docker_image</span><span class="o">=</span><span class="s2">"gcr.io/my-project/rollup:latest"</span><span class="p">,</span>
+    <span class="n">command</span><span class="o">=</span><span class="s2">"python /app/rollup.py"</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">"team"</span><span class="p">:</span> <span class="s2">"data-science"</span><span class="p">,</span> <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"production"</span><span class="p">},</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><code>created-by</code> is what <code>gc-batch list-my-jobs</code> filters on. It is resolved from the
+first environment variable in <code>settings.owner_email_env_vars</code> that is set
+(<code>$OWNER_EMAIL</code>, <code>$WORKBENCH_USER_EMAIL</code>, <code>$TERRA_USER_EMAIL</code>, then <code>$USER</code> by
+default), reduced to the local part of an email address — so
+<code>jane.doe@example.com</code> becomes <code>jane-doe</code>, and it falls back to <code>unknown</code> when
+none are set. Jobs you submit from the library are therefore findable with
+<code>list-my-jobs</code> just like CLI-submitted ones.</p>
+<p>For code that runs unattended, where no user identity applies, set it explicitly:</p>
+<div class="highlight"><pre><span></span><code><span class="n">labels</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"team"</span><span class="p">:</span> <span class="s2">"data-science"</span><span class="p">,</span> <span class="s2">"created-by"</span><span class="p">:</span> <span class="s2">"nightly-pipeline"</span><span class="p">}</span>
+</code></pre></div>
+<p>You can resolve the same value yourself, which is how you would build a
+<code>list_jobs</code> filter that matches the current user:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">gc_batch.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">resolve_created_by_label</span>
+
+<span class="n">created_by</span> <span class="o">=</span> <span class="n">resolve_created_by_label</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">settings</span><span class="o">.</span><span class="n">owner_email_env_vars</span><span class="p">)</span>
+<span class="n">my_jobs</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_jobs</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">"created-by"</span><span class="p">:</span> <span class="n">created_by</span><span class="p">})</span>
+</code></pre></div>
+<p>Label values must match GCP's rules: lowercase letters, numbers, <code>-</code>, and <code>_</code>.</p>
+<h2 id="waiting-for-a-job-to-finish">Waiting for a job to finish</h2>
+<p>There is no blocking <code>wait</code> call; poll <code>get_job</code> and check the state with
+<code>is_job_finished</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">gc_batch.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_job_finished</span>
+
+<span class="n">short_name</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="n">short_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">is_job_finished</span><span class="p">(</span><span class="n">job</span><span class="p">):</span>
+        <span class="k">break</span>
+    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>  <span class="c1"># SUCCEEDED, FAILED, CANCELLED, ...</span>
+
+<span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">"FAILED"</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get_failure_message</span><span class="p">(</span><span class="n">job</span><span class="p">))</span>
+</code></pre></div>
+<p><code>get_failure_message</code> summarizes the state, the most relevant failure event, the
+failed-task count, and the job UID — the same summary <code>gc-batch status --full</code>
+prints.</p>
+<h2 id="listing-and-filtering-jobs">Listing and filtering jobs</h2>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">timedelta</span><span class="p">,</span> <span class="n">timezone</span>
+
+<span class="c1"># Everything in the project/location</span>
+<span class="n">all_jobs</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_jobs</span><span class="p">()</span>
+
+<span class="c1"># By label</span>
+<span class="n">team_jobs</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_jobs</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">"team"</span><span class="p">:</span> <span class="s2">"data-science"</span><span class="p">})</span>
+
+<span class="c1"># Failed in the last day</span>
+<span class="n">recent_failures</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_jobs</span><span class="p">(</span>
+    <span class="n">status</span><span class="o">=</span><span class="s2">"FAILED"</span><span class="p">,</span>
+    <span class="n">since_time</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span> <span class="o">-</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+<span class="p">)</span>
+
+<span class="c1"># Combined filters</span>
+<span class="n">jobs</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_jobs</span><span class="p">(</span>
+    <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">"team"</span><span class="p">:</span> <span class="s2">"data-science"</span><span class="p">,</span> <span class="s2">"environment"</span><span class="p">:</span> <span class="s2">"production"</span><span class="p">},</span>
+    <span class="n">status</span><span class="o">=</span><span class="s2">"RUNNING"</span><span class="p">,</span>
+    <span class="n">page_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">job</span> <span class="ow">in</span> <span class="n">jobs</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+<p><code>labels</code>, <code>status</code>, and <code>since_time</code> are pushed into the Batch API filter.
+<code>name</code> is applied client-side (the Batch API has no name filter), so it narrows
+an already-fetched page rather than reducing what is fetched.</p>
+<h2 id="cancelling-a-job">Cancelling a job</h2>
+<p><code>cancel_job</code> takes the <strong>full</strong> resource path, not the short name:</p>
+<div class="highlight"><pre><span></span><code><span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="s2">"nightly-rollup-1758412800"</span><span class="p">)</span>
+<span class="n">client</span><span class="o">.</span><span class="n">cancel_job</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="logs">Logs</h2>
+<p>A job's logs live in one of two places, fixed when the job is created: Cloud
+Logging by default, or a GCS bucket when <code>logs_bucket</code> was set. Each has a reader
+on the client — <code>client.batch_logging</code> for Cloud Logging and <code>client.gcs_logging</code>
+for a bucket — and both expose the same <code>print_logs_for_job</code> /
+<code>download_logs_for_job</code> methods:</p>
+<div class="highlight"><pre><span></span><code><span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="s2">"nightly-rollup-1758412800"</span><span class="p">)</span>
+
+<span class="c1"># Print to stdout</span>
+<span class="n">client</span><span class="o">.</span><span class="n">batch_logging</span><span class="o">.</span><span class="n">print_logs_for_job</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+<span class="c1"># Only warnings and above</span>
+<span class="n">client</span><span class="o">.</span><span class="n">batch_logging</span><span class="o">.</span><span class="n">print_logs_for_job</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="s2">"WARNING"</span><span class="p">)</span>
+
+<span class="c1"># Write &lt;job-name&gt;.log into a directory</span>
+<span class="n">client</span><span class="o">.</span><span class="n">batch_logging</span><span class="o">.</span><span class="n">download_logs_for_job</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">download_dir</span><span class="o">=</span><span class="s2">"./logs"</span><span class="p">)</span>
+
+<span class="c1"># A Cloud Console link, handy to put in a Slack message or a dashboard</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">get_cloud_logging_url</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="s2">"ERROR"</span><span class="p">))</span>
+</code></pre></div>
+<p>Both readers return the number of entries handled, so zero is a successful read of
+an empty log rather than a failure, and both raise on an API error instead of
+printing it — see <a href="#errors">Errors</a>.</p>
+<p>To handle a job either way, ask which route it uses. This is exactly what
+<code>gc-batch logs print</code> does:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">gc_batch.gcs_logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">GCSLogReader</span>
+
+<span class="n">reader</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">gcs_logging</span> <span class="k">if</span> <span class="n">GCSLogReader</span><span class="o">.</span><span class="n">uses_gcs_logs</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="k">else</span> <span class="n">client</span><span class="o">.</span><span class="n">batch_logging</span>
+<span class="n">entry_count</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">print_logs_for_job</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">entry_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"The job produced no log entries."</span><span class="p">)</span>
+</code></pre></div>
+<p>For the entries themselves rather than printed output, <code>client.gcs_logging</code> has
+<code>read_logs_for_job</code>, which returns dicts with <code>timestamp</code>, <code>severity</code>,
+<code>textPayload</code>, <code>jsonPayload</code>, and <code>resource</code> keys:</p>
+<div class="highlight"><pre><span></span><code><span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">client</span><span class="o">.</span><span class="n">gcs_logging</span><span class="o">.</span><span class="n">read_logs_for_job</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">severity</span><span class="o">=</span><span class="s2">"ERROR"</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">entry</span><span class="p">[</span><span class="s2">"timestamp"</span><span class="p">],</span> <span class="n">entry</span><span class="p">[</span><span class="s2">"textPayload"</span><span class="p">])</span>
+
+<span class="c1"># Where the logs actually are, without reading them</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">GCSLogReader</span><span class="o">.</span><span class="n">resolve_log_location</span><span class="p">(</span><span class="n">job</span><span class="p">)</span><span class="o">.</span><span class="n">uri</span><span class="p">)</span>  <span class="c1"># gs://my-bucket/batch-logs/&lt;job&gt;/</span>
+</code></pre></div>
+<p>Entries come back in the order Batch wrote them — objects within a task, tasks in
+index order, <code>stdout</code> before <code>stderr</code> — not re-sorted by timestamp, because Batch
+timestamps have only one-second resolution.</p>
+<h3 id="choosing-the-destination">Choosing the destination</h3>
+<p>Set <code>logs_bucket</code> to route logs to GCS. Batch supports a single destination, so
+this turns Cloud Logging off for that job:</p>
+<div class="highlight"><pre><span></span><code><span class="n">config</span> <span class="o">=</span> <span class="n">BatchJobConfig</span><span class="p">(</span>
+    <span class="n">machine_type</span><span class="o">=</span><span class="s2">"e2-standard-2"</span><span class="p">,</span>
+    <span class="n">boot_disk_type</span><span class="o">=</span><span class="s2">"pd-balanced"</span><span class="p">,</span>
+    <span class="n">logs_bucket</span><span class="o">=</span><span class="s2">"my-bucket/batch-logs"</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Logs then land under <code>gs://my-bucket/batch-logs/&lt;timestamped-job-name&gt;/</code>, and
+<code>client.gcs_logging</code> reads them. This is the route to use where the caller has no
+Cloud Logging read access at all — a restricted-VPC environment, where querying
+Cloud Logging returns <code>403 Permission denied for all log views</code>. Since the
+destination cannot be changed after creation, decide before submitting.</p>
+<h2 id="mounts-local-ssd-and-environment">Mounts, local SSD, and environment</h2>
+<p><code>BatchJobConfig</code> covers the same ground as the <code>create</code> flags:</p>
+<div class="highlight"><pre><span></span><code><span class="n">config</span> <span class="o">=</span> <span class="n">BatchJobConfig</span><span class="p">(</span>
+    <span class="n">machine_type</span><span class="o">=</span><span class="s2">"n2-standard-8"</span><span class="p">,</span>
+    <span class="n">boot_disk_type</span><span class="o">=</span><span class="s2">"pd-balanced"</span><span class="p">,</span>
+    <span class="n">boot_disk_size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+    <span class="c1"># GCS buckets mounted into the container (no gs:// prefix)</span>
+    <span class="n">input_bucket</span><span class="o">=</span><span class="s2">"my-bucket/datasets"</span><span class="p">,</span>
+    <span class="n">input_dir</span><span class="o">=</span><span class="s2">"/mnt/input"</span><span class="p">,</span>
+    <span class="n">output_bucket</span><span class="o">=</span><span class="s2">"my-bucket/results"</span><span class="p">,</span>
+    <span class="n">output_dir</span><span class="o">=</span><span class="s2">"/mnt/output"</span><span class="p">,</span>
+    <span class="c1"># Scratch space; size must be a multiple of 375 GB</span>
+    <span class="n">local_ssd_size_gb</span><span class="o">=</span><span class="mi">375</span><span class="p">,</span>
+    <span class="n">local_ssd_mount_path</span><span class="o">=</span><span class="s2">"/mnt/scratch"</span><span class="p">,</span>
+    <span class="c1"># SPOT VMs for non-urgent work</span>
+    <span class="n">provisioning_model</span><span class="o">=</span><span class="s2">"SPOT"</span><span class="p">,</span>
+    <span class="c1"># Environment variables for the container</span>
+    <span class="n">user_env_dict</span><span class="o">=</span><span class="p">{</span><span class="s2">"LOG_LEVEL"</span><span class="p">:</span> <span class="s2">"DEBUG"</span><span class="p">,</span> <span class="s2">"MAX_WORKERS"</span><span class="p">:</span> <span class="s2">"4"</span><span class="p">},</span>
+<span class="p">)</span>
+
+<span class="n">request</span> <span class="o">=</span> <span class="n">JobRequest</span><span class="p">(</span>
+    <span class="n">job_name</span><span class="o">=</span><span class="s2">"analysis"</span><span class="p">,</span>
+    <span class="n">docker_image</span><span class="o">=</span><span class="s2">"gcr.io/my-project/analyzer:latest"</span><span class="p">,</span>
+    <span class="n">command</span><span class="o">=</span><span class="s2">"python /app/analyze.py"</span><span class="p">,</span>
+    <span class="n">args</span><span class="o">=</span><span class="s2">"--input /mnt/input/data.csv --output /mnt/output/results/"</span><span class="p">,</span>
+    <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>For requester-pays buckets, set <code>input_billing_project</code> / <code>logs_billing_project</code>.
+LSSD machine types (for example <code>c4-standard-8-lssd</code>) come with SSDs attached, so
+set <code>local_ssd_mount_path</code> but leave <code>local_ssd_size_gb</code> unset — passing both
+raises <code>ValueError</code>.</p>
+<p>See <a href="../mounts/">Input/Output Mounts</a> and <a href="../local-ssd/">Local SSD Storage</a> for the
+details behind these fields.</p>
+<h2 id="settings-and-job-profiles">Settings and job profiles</h2>
+<p><code>BatchClientConfig.settings</code> holds the deployment-specific values. Constructing
+<code>GCBatchSettings</code> directly uses environment variables and defaults only;
+<code>GCBatchSettings.load()</code> also reads the TOML config file:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">gc_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchClientConfig</span><span class="p">,</span> <span class="n">GCBatchClient</span><span class="p">,</span> <span class="n">GCBatchSettings</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">GCBatchSettings</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>  <span class="c1"># ./gc-batch.toml, $GC_BATCH_CONFIG_FILE, XDG path</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">GCBatchClient</span><span class="p">(</span>
+    <span class="n">BatchClientConfig</span><span class="p">(</span>
+        <span class="n">project_id</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">default_project_id</span> <span class="ow">or</span> <span class="s2">"my-project"</span><span class="p">,</span>
+        <span class="n">location</span><span class="o">=</span><span class="s2">"us-central1"</span><span class="p">,</span>
+        <span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Or set them inline, skipping config-file discovery entirely:</p>
+<div class="highlight"><pre><span></span><code><span class="n">settings</span> <span class="o">=</span> <span class="n">GCBatchSettings</span><span class="p">(</span>
+    <span class="n">job_name_prefix</span><span class="o">=</span><span class="s2">"team-a-"</span><span class="p">,</span>
+    <span class="n">created_using_label</span><span class="o">=</span><span class="s2">"my-pipeline"</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>Job profiles are bundles of networking/VM settings — what the CLI applies for
+<code>--job-profile</code>. In library code, apply one with <code>BatchJobConfig.apply_profile</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">gc_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchJobConfig</span><span class="p">,</span> <span class="n">GCBatchSettings</span>
+
+<span class="n">settings</span> <span class="o">=</span> <span class="n">GCBatchSettings</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+<span class="n">profile</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">job_profiles</span><span class="p">[</span><span class="s2">"all-of-us"</span><span class="p">]</span>  <span class="c1"># built-in; add your own via config</span>
+
+<span class="n">config</span> <span class="o">=</span> <span class="n">BatchJobConfig</span><span class="p">(</span>
+    <span class="n">machine_type</span><span class="o">=</span><span class="s2">"n2-standard-4"</span><span class="p">,</span>
+    <span class="n">boot_disk_type</span><span class="o">=</span><span class="s2">"pd-balanced"</span><span class="p">,</span>
+<span class="p">)</span><span class="o">.</span><span class="n">apply_profile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+</code></pre></div>
+<p><code>apply_profile</code> mutates the config in place and returns it, so it works either
+chained (as above) or as a statement on an existing config. Fields the profile
+leaves unset are untouched, so you can apply a profile over a config that already
+has other settings. When the profile sets <code>service_account_from_gcloud</code>, the
+service account is resolved from the active <code>gcloud</code> account and a <code>ValueError</code> is
+raised if there isn't one:</p>
+<div class="highlight"><pre><span></span><code><span class="k">try</span><span class="p">:</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">apply_profile</span><span class="p">(</span><span class="n">profile</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">ValueError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>  <span class="c1"># ... Please run `gcloud auth login`.</span>
+</code></pre></div>
+<p>A profile's <code>cloud_logging_unreadable</code> flag is advisory rather than a job setting,
+so <code>apply_profile</code> does not act on it. It marks environments where Cloud Logging
+cannot be read; the CLI warns when such a profile is used without <code>--logs-bucket</code>,
+and library code can make the same check:</p>
+<div class="highlight"><pre><span></span><code><span class="k">if</span> <span class="n">profile</span><span class="o">.</span><span class="n">cloud_logging_unreadable</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">config</span><span class="o">.</span><span class="n">logs_bucket</span><span class="p">:</span>
+    <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">"Set logs_bucket, or this job's logs will be unreadable."</span><span class="p">)</span>
+</code></pre></div>
+<p>See <a href="../configuration/">Configuration</a> for defining your own profiles.</p>
+<h2 id="fanning-out-over-many-inputs">Fanning out over many inputs</h2>
+<p>Submission is cheap and non-blocking, so the usual pattern is to submit a job per
+input and then poll the batch of them:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">gc_batch</span><span class="w"> </span><span class="kn">import</span> <span class="n">BatchClientConfig</span><span class="p">,</span> <span class="n">BatchJobConfig</span><span class="p">,</span> <span class="n">GCBatchClient</span><span class="p">,</span> <span class="n">JobRequest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gc_batch.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_job_finished</span>
+
+<span class="n">SAMPLES</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"SAMPLE_001"</span><span class="p">,</span> <span class="s2">"SAMPLE_002"</span><span class="p">,</span> <span class="s2">"SAMPLE_003"</span><span class="p">]</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">GCBatchClient</span><span class="p">(</span><span class="n">BatchClientConfig</span><span class="p">(</span><span class="n">project_id</span><span class="o">=</span><span class="s2">"my-project"</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s2">"us-central1"</span><span class="p">))</span>
+
+<span class="n">submitted</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">SAMPLES</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">BatchJobConfig</span><span class="p">(</span>
+        <span class="n">machine_type</span><span class="o">=</span><span class="s2">"n2-highmem-8"</span><span class="p">,</span>
+        <span class="n">boot_disk_type</span><span class="o">=</span><span class="s2">"pd-balanced"</span><span class="p">,</span>
+        <span class="n">boot_disk_size</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span>
+        <span class="n">input_bucket</span><span class="o">=</span><span class="sa">f</span><span class="s2">"my-genomics-bucket/raw-samples/</span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+        <span class="n">output_bucket</span><span class="o">=</span><span class="sa">f</span><span class="s2">"my-genomics-bucket/processed/</span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_job</span><span class="p">(</span>
+        <span class="n">JobRequest</span><span class="p">(</span>
+            <span class="n">job_name</span><span class="o">=</span><span class="sa">f</span><span class="s2">"sequence-</span><span class="si">{</span><span class="n">sample</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">'_'</span><span class="p">,</span><span class="w"> </span><span class="s1">'-'</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span>
+            <span class="n">docker_image</span><span class="o">=</span><span class="s2">"gcr.io/my-project/sequencing:latest"</span><span class="p">,</span>
+            <span class="n">command</span><span class="o">=</span><span class="s2">"python /app/sequence.py"</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="sa">f</span><span class="s2">"--sample-id </span><span class="si">{</span><span class="n">sample</span><span class="si">}</span><span class="s2"> --reference hg38"</span><span class="p">,</span>
+            <span class="n">config</span><span class="o">=</span><span class="n">config</span><span class="p">,</span>
+            <span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">"project"</span><span class="p">:</span> <span class="s2">"genomics"</span><span class="p">,</span> <span class="s2">"sample"</span><span class="p">:</span> <span class="n">sample</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="s2">"-"</span><span class="p">)},</span>
+        <span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">submitted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">pending</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">submitted</span><span class="p">)</span>
+<span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">while</span> <span class="n">pending</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">short_name</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">pending</span><span class="p">):</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get_job</span><span class="p">(</span><span class="n">short_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">is_job_finished</span><span class="p">(</span><span class="n">job</span><span class="p">):</span>
+            <span class="n">results</span><span class="p">[</span><span class="n">short_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span><span class="o">.</span><span class="n">state</span><span class="o">.</span><span class="n">name</span>
+            <span class="n">pending</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">short_name</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pending</span><span class="p">:</span>
+        <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>
+
+<span class="n">failed</span> <span class="o">=</span> <span class="p">[</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">state</span> <span class="ow">in</span> <span class="n">results</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">state</span> <span class="o">!=</span> <span class="s2">"SUCCEEDED"</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">len</span><span class="p">(</span><span class="n">failed</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span><span class="si">}</span><span class="s2"> succeeded"</span><span class="p">)</span>
+</code></pre></div>
+<p>Since each submitted job carries your labels, you can also poll the whole set
+with one API call instead of one per job:</p>
+<div class="highlight"><pre><span></span><code><span class="n">jobs</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">list_jobs</span><span class="p">(</span><span class="n">labels</span><span class="o">=</span><span class="p">{</span><span class="s2">"project"</span><span class="p">:</span> <span class="s2">"genomics"</span><span class="p">},</span> <span class="n">status</span><span class="o">=</span><span class="s2">"RUNNING"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">jobs</span><span class="p">)</span><span class="si">}</span><span class="s2"> still running"</span><span class="p">)</span>
+</code></pre></div>
+<h2 id="errors">Errors</h2>
+<p>The client logs and re-raises the underlying <code>google-cloud-batch</code> exceptions, so
+handle them as you would any GCP API call. Configuration mistakes surface earlier,
+as <code>pydantic.ValidationError</code> when the models are constructed:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">google.api_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">exceptions</span> <span class="k">as</span> <span class="n">gcp_exceptions</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">BatchJobConfig</span><span class="p">(</span><span class="n">machine_type</span><span class="o">=</span><span class="s2">"n2-standard-4"</span><span class="p">,</span> <span class="n">boot_disk_type</span><span class="o">=</span><span class="s2">"not-a-disk"</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Bad job config: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">create_job</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">gcp_exceptions</span><span class="o">.</span><span class="n">PermissionDenied</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Check your credentials and project: </span><span class="si">{</span><span class="n">error</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</code></pre></div>
+<p>Log retrieval raises too, rather than reporting a failure as an empty log, so a
+permission problem is distinguishable from a job that printed nothing:</p>
+<div class="highlight"><pre><span></span><code><span class="k">try</span><span class="p">:</span>
+    <span class="n">entry_count</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">batch_logging</span><span class="o">.</span><span class="n">print_logs_for_job</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+<span class="k">except</span> <span class="n">gcp_exceptions</span><span class="o">.</span><span class="n">PermissionDenied</span><span class="p">:</span>
+    <span class="c1"># Normal in restricted environments; such jobs need logs_bucket instead.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"No Cloud Logging read access in this project."</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">entry_count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">"The job produced no log entries."</span><span class="p">)</span>
+</code></pre></div>
+<p><code>client.gcs_logging</code> additionally raises <code>ValueError</code> if the job does not write its
+logs to a bucket, which is what <code>GCSLogReader.uses_gcs_logs(job)</code> checks for.</p>
+<p>Pass your own logger if you want the client's output to go through your
+application's logging setup:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+
+<span class="n">client</span> <span class="o">=</span> <span class="n">GCBatchClient</span><span class="p">(</span>
+    <span class="n">BatchClientConfig</span><span class="p">(</span><span class="n">project_id</span><span class="o">=</span><span class="s2">"my-project"</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="s2">"us-central1"</span><span class="p">),</span>
+    <span class="n">log_level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<h2 id="full-api-reference">Full API reference</h2>
+<p>The generated reference documents every model field and method:</p>
+<ul>
+<li><a href="../../reference/gc_batch/client/"><code>gc_batch.client</code></a></li>
+<li><a href="../../reference/gc_batch/models/job_request/"><code>gc_batch.models.job_request</code></a></li>
+<li><a href="../../reference/gc_batch/models/batch_config/"><code>gc_batch.models.batch_config</code></a></li>
+<li><a href="../../reference/gc_batch/batch_logging/"><code>gc_batch.batch_logging</code></a></li>
+<li><a href="../../reference/gc_batch/gcs_logging/"><code>gc_batch.gcs_logging</code></a></li>
+<li><a href="../../reference/gc_batch/settings/"><code>gc_batch.settings</code></a></li>
+<li><a href="../../reference/gc_batch/utils/"><code>gc_batch.utils</code></a></li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.action.edit", "content.code.copy", "content.code.annotate", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": {"alias": true, "default": "stable", "provider": "mike"}}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
+      
+    
+  </body>
+</html>
