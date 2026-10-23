@@ -312,4 +312,6 @@ class TestBootDiskImage:
         job = client._create_job_spec(_make_job_request())
 
         boot_disk = job.allocation_policy.instances[0].policy.boot_disk
-        assert boot_disk.image == Constants.BOOT_DISK_IMAGE
+        assert boot_disk.image == (
+            f"projects/{client.config.project_id}/global/images/{Constants.BOOT_DISK_IMAGE}"
+        )
