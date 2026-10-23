@@ -509,7 +509,7 @@ class GCBatchClient:
             size_gb=job_request.config.boot_disk_size,
             # Batch requires a fully-qualified image path; the pinned image
             # lives in the same project the job is submitted to.
-            image=f"projects/{self.config.project_id}/global/images/{Constants.BOOT_DISK_IMAGE}",
+            image=f"projects/batch-custom-image/global/images/{Constants.BOOT_DISK_IMAGE}",
         )
 
         # Build InstancePolicy with optional provisioning_model
