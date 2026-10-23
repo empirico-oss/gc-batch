@@ -51,3 +51,5 @@ site/
 
 # Claude Code local settings
 .claude/
+.agents/
+.nodeterm/

@@ -313,5 +313,5 @@ class TestBootDiskImage:
 
         boot_disk = job.allocation_policy.instances[0].policy.boot_disk
         assert boot_disk.image == (
-            f"projects/{client.config.project_id}/global/images/{Constants.BOOT_DISK_IMAGE}"
+            f"projects/batch-custom-image/global/images/{Constants.BOOT_DISK_IMAGE}"
         )
