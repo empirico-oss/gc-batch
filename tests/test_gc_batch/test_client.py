@@ -303,3 +303,13 @@ class TestJobLabels:
         job = client._create_job_spec(request)
 
         assert job.labels["created-by"] == "nightly-pipeline"
+
+
+class TestBootDiskImage:
+    """The boot disk image is pinned so VMs don't drift with new Batch defaults."""
+
+    def test_boot_disk_image_is_pinned(self, client):
+        job = client._create_job_spec(_make_job_request())
+
+        boot_disk = job.allocation_policy.instances[0].policy.boot_disk
+        assert boot_disk.image == Constants.BOOT_DISK_IMAGE

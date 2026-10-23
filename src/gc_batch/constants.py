@@ -100,6 +100,7 @@ class Constants(CustomStrEnum):
         LOGGING_DIR: Where the Docker container reads/filters logs.
         LOG_VOLUME_CONFIG: Volume configuration string for Docker.
         CLOUD_SDK_IMAGE: Default Google Cloud SDK Docker image.
+        BOOT_DISK_IMAGE: Pinned boot disk image for Batch job VMs.
     """
 
     DATA_DISK_NAME = "datadisk"
@@ -114,6 +115,7 @@ class Constants(CustomStrEnum):
     LOGGING_DIR = "/mnt/data/.logging"  # Where Docker container reads/filters logs
     LOG_VOLUME_CONFIG = "/mnt/disks/data:/mnt/data"  # Volume configuration for Docker container
     CLOUD_SDK_IMAGE = "gcr.io/google.com/cloudsdktool/cloud-sdk:294.0.0-slim"  # Cloud SDK image
+    BOOT_DISK_IMAGE = "20261001-00-p0"  # Pinned boot disk image for Batch job VMs
 
 
 class EnvironmentVariables(CustomStrEnum):

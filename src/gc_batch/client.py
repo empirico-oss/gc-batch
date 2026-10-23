@@ -507,6 +507,7 @@ class GCBatchClient:
         vm_boot_disk = batch_v1.AllocationPolicy.Disk(
             type_=job_request.config.boot_disk_type,
             size_gb=job_request.config.boot_disk_size,
+            image=Constants.BOOT_DISK_IMAGE,
         )
 
         # Build InstancePolicy with optional provisioning_model
