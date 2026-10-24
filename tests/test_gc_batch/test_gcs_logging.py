@@ -6,6 +6,7 @@ All GCS access is faked; these tests never touch the network.
 from __future__ import annotations
 
 import pytest
+from google.api_core.exceptions import ResourceExhausted
 from google.cloud import batch_v1
 from google.cloud.batch_v1.types import Job as GCSBatchJob
 
@@ -478,3 +479,117 @@ class TestStderrIsInterleavedInEmissionOrder:
         messages = [e["textPayload"] for e in reader.read_logs_for_job(_make_path_job())]
 
         assert sorted(messages) == ["DONE", "first", "on stderr"]
+
+
+class FlakyBlob(FakeBlob):
+    """A ``FakeBlob`` whose downloads fail with 429 a set number of times."""
+
+    def __init__(self, name: str, data: bytes, download_failures: int):
+        super().__init__(name, data)
+        self._download_failures = download_failures
+        self.download_calls = 0
+
+    def download_as_bytes(self) -> bytes:
+        self.download_calls += 1
+        if self._download_failures > 0:
+            self._download_failures -= 1
+            raise ResourceExhausted("429 rate limit exceeded")
+        return super().download_as_bytes()
+
+
+class FlakyBucket(FakeBucket):
+    """A ``FakeBucket`` whose listings fail with 429 a set number of times.
+
+    The failure budget lives on the owning client: ``_list_parsed_objects``
+    fetches a fresh bucket handle for every retry attempt, so per-bucket state
+    would reset the failures each time.
+    """
+
+    def __init__(self, name: str, blobs: list[FakeBlob], user_project: str | None, client):
+        super().__init__(name, blobs, user_project)
+        self._client = client
+
+    def list_blobs(self, prefix: str | None = None) -> list[FakeBlob]:
+        self._client.list_calls += 1
+        if self._client._list_failures > 0:
+            self._client._list_failures -= 1
+            raise ResourceExhausted("429 rate limit exceeded")
+        return super().list_blobs(prefix)
+
+
+class FlakyStorageClient(FakeStorageClient):
+    """A ``FakeStorageClient`` whose listings and downloads fail with 429 first."""
+
+    def __init__(
+        self,
+        blobs: dict[str, bytes],
+        list_failures: int = 0,
+        download_failures: int = 0,
+    ):
+        super().__init__(blobs)
+        self._blobs = [FlakyBlob(blob.name, blob._data, download_failures) for blob in self._blobs]
+        self._list_failures = list_failures
+        self.list_calls = 0
+
+    def bucket(self, bucket_name: str, user_project: str | None = None) -> FlakyBucket:
+        return FlakyBucket(bucket_name, self._blobs, user_project, self)
+
+
+def _make_flaky_reader(
+    blobs: dict[str, bytes], list_failures: int = 0, download_failures: int = 0
+) -> GCSLogReader:
+    config = BatchClientConfig(project_id="test-project", location="us-central1")
+    return GCSLogReader(
+        config=config,
+        storage_client=FlakyStorageClient(
+            blobs, list_failures=list_failures, download_failures=download_failures
+        ),
+    )
+
+
+class TestRateLimitRetry:
+    """GCS log reads retry with backoff on 429 quota errors.
+
+    ``_list_parsed_objects`` backs both the ``has_log_objects`` probe (part of
+    the failed-job polling path) and ``read_logs_for_job``; downloads are
+    retried separately via ``_download_log_object``.
+    """
+
+    def test_listing_retries_after_429(self, retry_sleeps):
+        reader = _make_flaky_reader(
+            {_object_name("stdout"): _task_line("hello").encode()},
+            list_failures=1,
+        )
+
+        assert reader.has_log_objects(_make_path_job()) is True
+
+        assert reader.storage_client.list_calls == 2
+        assert len(retry_sleeps) == 1
+
+    def test_listing_reraises_when_quota_never_clears(self, retry_sleeps):
+        reader = _make_flaky_reader(
+            {_object_name("stdout"): _task_line("hello").encode()},
+            list_failures=99,
+        )
+
+        with pytest.raises(ResourceExhausted):
+            reader.has_log_objects(_make_path_job())
+
+        # The default attempt cap is 12: one initial call plus 11 retries.
+        assert reader.storage_client.list_calls == 12
+        assert len(retry_sleeps) == 11
+
+    def test_download_retries_after_429(self, retry_sleeps):
+        reader = _make_flaky_reader(
+            {_object_name("stdout"): _task_line("hello").encode()},
+            download_failures=1,
+        )
+
+        entries = reader.read_logs_for_job(_make_path_job())
+
+        assert len(entries) == 1
+        assert entries[0]["textPayload"] == "hello"
+        assert reader.storage_client.list_calls == 1  # listing succeeded
+        blob = reader.storage_client._blobs[0]
+        assert blob.download_calls == 2
+        assert len(retry_sleeps) == 1

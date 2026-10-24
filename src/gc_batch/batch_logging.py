@@ -18,6 +18,7 @@ from google.cloud.batch_v1.types import Job as GCSBatchJob
 from gc_batch.google_utils import GoogleUtils
 from gc_batch.logger import Logger, get_logger
 from gc_batch.models.batch_config import BatchClientConfig
+from gc_batch.retry import retry_on_rate_limit
 from gc_batch.utils import get_formatted_start_and_end_time
 
 
@@ -353,6 +354,7 @@ class BatchLogging:
                         return instance_id
         return None
 
+    @retry_on_rate_limit
     def _query_cloud_logs(
         self,
         filter_str: str,
@@ -361,6 +363,10 @@ class BatchLogging:
     ) -> list[dict]:
         """
         Query Cloud Logging with the given filter.
+
+        Retries with exponential backoff when Cloud Logging returns a
+        rate-limit (429) error. See ``gc_batch.retry`` for the tunable
+        ``GC_BATCH_RETRY_*`` environment variables.
 
         Args:
             filter_str (str): The filter string for the query

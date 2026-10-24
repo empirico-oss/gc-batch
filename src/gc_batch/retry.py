@@ -1,19 +1,23 @@
-"""Retry policy for Google Cloud Batch API rate-limit (429) errors.
+"""Retry policy for Google Cloud API rate-limit (429) errors.
 
-Google Cloud Batch enforces per-region read quotas ("Read requests per minute
-per region"). Anything that polls job status on a short interval — for example
-``remotely``'s batch backend calling :meth:`GCBatchClient.list_jobs` and
-:meth:`GCBatchClient.get_job` — can exhaust the quota and receive
-``ResourceExhausted`` (HTTP 429) errors. The google-api-core client already
-retries internally, but its budget is short and the quota resets only once a
-minute, so a burst of polls still surfaces the error to the caller.
+Google Cloud enforces per-region, per-minute quotas on its services: the
+Batch API limits "Read requests per minute per region", Cloud Logging limits
+entries read per minute, and GCS limits requests per bucket. Anything that
+polls on a short interval — for example ``remotely``'s batch backend calling
+:meth:`GCBatchClient.list_jobs` and :meth:`GCBatchClient.get_job` — can
+exhaust a quota and receive ``ResourceExhausted`` (HTTP 429) errors. The
+google-api-core client already retries internally, but its budget is short
+and quotas reset only once a minute, so a burst of requests still surfaces
+the error to the caller.
 
-The decorator here adds a slow, jittered exponential backoff on top, tuned for
-a quota that resets every minute: waits start at a few seconds, grow to at most
-a minute, and give up after a bounded total timeout. When retries are
-exhausted, the original ``ResourceExhausted`` exception is re-raised (tenacity
-``reraise=True``), so callers see the same exception they would have seen
-without the retry.
+The decorator here adds a slow, jittered exponential backoff on top, tuned
+for quotas that reset every minute: waits start at a few seconds, grow to at
+most a minute, and give up after a bounded total timeout. It is applied to
+gc-batch's read requests — Batch API ``jobs.get``/``jobs.list``, Cloud
+Logging ``entries.list``, and GCS log-object listing and downloads. When
+retries are exhausted, the original ``ResourceExhausted`` exception is
+re-raised (tenacity ``reraise=True``), so callers see the same exception
+they would have seen without the retry.
 
 Every knob can be set three ways, in decreasing precedence:
 
@@ -58,7 +62,7 @@ logger = logging.getLogger(__name__)
 
 F = TypeVar("F", bound=Callable[..., Any])
 
-#: 429-equivalent exceptions: the Batch API is called over gRPC, which raises
+#: 429-equivalent exceptions: Google Cloud clients called over gRPC raise
 #: ResourceExhausted; plain-HTTP transports raise TooManyRequests.
 RATE_LIMIT_EXCEPTIONS = (exceptions.ResourceExhausted, exceptions.TooManyRequests)
 

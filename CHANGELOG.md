@@ -26,6 +26,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   max_attempts=15)` — with explicit arguments taking precedence over the
   environment variables, which take precedence over the built-in defaults;
   invalid (non-positive) arguments raise `ValueError` at decoration time.
+- The same 429 retry now covers gc-batch's remaining read requests: Cloud
+  Logging queries (`BatchLogging._query_cloud_logs`, which backs `logs print`,
+  `logs download`, the instance-ID lookup, and the failed-job log probe used
+  while polling) and GCS log reads (`GCSLogReader` object listing and
+  downloads). The Batch API write calls (`create_job`, `cancel_job`) are
+  intentionally not retried, so submission failures surface immediately.
 
 ## [0.2.0]
 

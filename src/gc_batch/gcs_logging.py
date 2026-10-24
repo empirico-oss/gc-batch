@@ -29,6 +29,7 @@ from gc_batch.constants import Constants
 from gc_batch.google_utils import GoogleUtils
 from gc_batch.logger import Logger, get_logger
 from gc_batch.models.batch_config import BatchClientConfig
+from gc_batch.retry import retry_on_rate_limit
 
 #: Cloud Logging severity ordering, used for ``severity>=`` style thresholds.
 SEVERITY_ORDER: dict[str, int] = {
@@ -319,7 +320,7 @@ class GCSLogReader:
 
         entries: list[dict] = []
         for log_object in sorted(log_objects, key=lambda item: item.sort_key):
-            content = log_object.blob.download_as_bytes()
+            content = self._download_log_object(log_object.blob)
             entries.extend(self._parse_log_content(content, log_object))
 
         if not include_agent_logs:
@@ -425,13 +426,29 @@ class GCSLogReader:
         """Return the bucket handle, honouring requester-pays billing."""
         return self.storage_client.bucket(location.bucket, user_project=location.billing_project)
 
+    @retry_on_rate_limit
+    def _download_log_object(self, blob: storage.Blob) -> bytes:
+        """Download one log object's bytes from GCS.
+
+        Retries with exponential backoff when GCS returns a rate-limit (429)
+        error. See ``gc_batch.retry`` for the tunable ``GC_BATCH_RETRY_*``
+        environment variables.
+        """
+        return blob.download_as_bytes()
+
+    @retry_on_rate_limit
     def _list_parsed_objects(
         self,
         job: GCSBatchJob,
         bucket: storage.Bucket | None = None,
         location: GCSLogLocation | None = None,
     ) -> list[_LogObject]:
-        """List the job's Batch log objects, ignoring anything else in the prefix."""
+        """List the job's Batch log objects, ignoring anything else in the prefix.
+
+        Retries with exponential backoff when GCS returns a rate-limit (429)
+        error. See ``gc_batch.retry`` for the tunable ``GC_BATCH_RETRY_*``
+        environment variables.
+        """
         location = location or self.resolve_log_location(job)
         bucket = bucket if bucket is not None else self._get_bucket(location)
         list_prefix = f"{location.prefix}/" if location.prefix else None
