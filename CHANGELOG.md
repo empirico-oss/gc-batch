@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Automatic retry with exponential backoff when the Batch API returns a
+  rate-limit error (`429 ResourceExhausted`, e.g. the "Read requests per
+  minute per region" quota). `GCBatchClient.get_job` and `list_jobs` — the
+  methods job-status pollers call — now back off with jittered waits that
+  start at a few seconds, grow to at most a minute, and give up after roughly
+  five minutes, re-raising the original `ResourceExhausted` if the quota is
+  still exhausted then. Other errors (permission failures, invalid filters,
+  …) are not retried. The new `gc_batch.retry` module exposes the knobs as
+  environment variables — `GC_BATCH_RETRY_INITIAL_DELAY_SECONDS`,
+  `GC_BATCH_RETRY_MAX_DELAY_SECONDS`, `GC_BATCH_RETRY_TIMEOUT_SECONDS`, and
+  `GC_BATCH_RETRY_MAX_ATTEMPTS` — so pollers with their own quota budget (for
+  example remotely's batch backend) can tune the backoff without code changes.
+
 ## [0.2.0]
 
 First public release.

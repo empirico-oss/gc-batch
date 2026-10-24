@@ -1,10 +1,11 @@
 """Tests for GCBatchClient, focused on list_jobs filtering behavior."""
 
+import warnings
 from datetime import datetime, timezone
 from unittest.mock import MagicMock, patch
 
 import pytest
-from google.api_core.exceptions import PermissionDenied
+from google.api_core.exceptions import PermissionDenied, ResourceExhausted
 from google.cloud import batch_v1
 from google.cloud.batch_v1.types import Job as GCSBatchJob
 from google.cloud.batch_v1.types import JobStatus
@@ -303,6 +304,123 @@ class TestJobLabels:
         job = client._create_job_spec(request)
 
         assert job.labels["created-by"] == "nightly-pipeline"
+
+
+class TestRateLimitRetry:
+    """Read operations retry with backoff on 429 quota errors.
+
+    Pollers (e.g. remotely's batch backend) call ``get_job`` and ``list_jobs``
+    frequently enough to exhaust the Batch API's per-region read quota, and
+    the API answers with ``ResourceExhausted`` (429).
+    """
+
+    @pytest.fixture(autouse=True)
+    def _no_sleeping(self, monkeypatch):
+        """Make retry backoff instant and observable."""
+        self.sleeps: list[float] = []
+        monkeypatch.setattr("tenacity.nap.sleep", lambda seconds: self.sleeps.append(seconds))
+
+    def test_get_job_retries_after_429_and_succeeds(self, client):
+        job = _make_job("my-job-1")
+        client.client.get_job = MagicMock(
+            side_effect=[
+                ResourceExhausted("Quota exceeded for quota metric 'Read requests'"),
+                job,
+            ]
+        )
+
+        result = client.get_job("my-job-1")
+
+        assert result == job
+        assert client.client.get_job.call_count == 2
+        assert len(self.sleeps) == 1  # one backoff before the successful retry
+
+    def test_get_job_reraises_resource_exhausted_when_quota_never_clears(self, client):
+        client.client.get_job = MagicMock(
+            side_effect=ResourceExhausted("Quota exceeded for quota metric 'Read requests'")
+        )
+
+        with pytest.raises(ResourceExhausted):
+            client.get_job("my-job-1")
+
+        # The default attempt cap is 12: one initial call plus 11 retries.
+        assert client.client.get_job.call_count == 12
+
+    def test_get_job_does_not_retry_other_errors(self, client):
+        client.client.get_job = MagicMock(side_effect=PermissionDenied("403"))
+
+        with pytest.raises(PermissionDenied):
+            client.get_job("my-job-1")
+
+        assert client.client.get_job.call_count == 1
+        assert self.sleeps == []
+
+    def test_get_job_retries_back_off_exponentially(self, client):
+        """Delays grow between attempts rather than hammering the quota."""
+        job = _make_job("my-job-1")
+        client.client.get_job = MagicMock(
+            side_effect=[ResourceExhausted("429"), ResourceExhausted("429"), job]
+        )
+
+        client.get_job("my-job-1")
+
+        assert len(self.sleeps) == 2
+        assert self.sleeps[1] >= self.sleeps[0]
+
+    def test_retry_budget_is_tunable_via_environment(self, client, monkeypatch):
+        monkeypatch.setenv("GC_BATCH_RETRY_MAX_ATTEMPTS", "2")
+        client.client.get_job = MagicMock(side_effect=ResourceExhausted("429"))
+
+        with pytest.raises(ResourceExhausted):
+            client.get_job("my-job-1")
+
+        assert client.client.get_job.call_count == 2
+
+    def test_invalid_retry_env_value_falls_back_to_default(self, client, monkeypatch):
+        monkeypatch.setenv("GC_BATCH_RETRY_MAX_ATTEMPTS", "not-a-number")
+        client.client.get_job = MagicMock(side_effect=ResourceExhausted("429"))
+
+        with pytest.raises(ResourceExhausted):
+            client.get_job("my-job-1")
+
+        assert client.client.get_job.call_count == 12
+
+    def test_list_jobs_retries_after_429_and_succeeds(self, client):
+        """The remotely poller hit this quota through ``list_jobs``."""
+        job = _make_job("my-job-1")
+        client.client.list_jobs = MagicMock(
+            side_effect=[
+                ResourceExhausted("Quota exceeded for quota metric 'Read requests'"),
+                [job],
+            ]
+        )
+
+        result = client._list_jobs()
+
+        assert result == [job]
+        assert client.client.list_jobs.call_count == 2
+        assert len(self.sleeps) == 1
+
+    def test_list_jobs_through_public_api_retries_after_429(self, client):
+        """``list_jobs`` inherits the retry because it delegates to ``_list_jobs``."""
+        job = _make_job("my-job-1")
+        client.client.list_jobs = MagicMock(side_effect=[ResourceExhausted("429"), [job]])
+
+        result = client.list_jobs(labels={"team": "data-science"})
+
+        assert result == [job]
+        assert client.client.list_jobs.call_count == 2
+
+    def test_retry_does_not_emit_deprecation_warnings(self, client):
+        """The tenacity 8/9 compatibility shim must not trip -W error builds."""
+        job = _make_job("my-job-1")
+        client.client.get_job = MagicMock(side_effect=[ResourceExhausted("429"), job])
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("error")
+            result = client.get_job("my-job-1")
+
+        assert result == job
 
 
 class TestBootDiskImage:

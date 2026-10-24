@@ -21,6 +21,7 @@ from gc_batch.gcs_logging import GCSLogReader
 from gc_batch.logger import Logger, get_logger
 from gc_batch.models.batch_config import BatchClientConfig
 from gc_batch.models.job_request import BatchJobConfig, JobRequest, MachineTypeHelper
+from gc_batch.retry import retry_on_rate_limit
 from gc_batch.utils import resolve_created_by_label
 
 
@@ -128,14 +129,25 @@ class GCBatchClient:
             self.logging.error(f"Error creating job: {e}")
             raise e
 
+    @retry_on_rate_limit
     def get_job(self, job_name: str) -> GCSBatchJob:
         """Get a specific job by name.
+
+        Retries with exponential backoff when the Batch API returns a
+        rate-limit (429) error, since this method is called by pollers.
+        See ``gc_batch.retry`` for the tunable ``GC_BATCH_RETRY_*``
+        environment variables.
 
         Args:
             job_name: The short job name (not the full resource path).
 
         Returns:
             The GCSBatchJob object with full job details.
+
+        Raises:
+            google.api_core.exceptions.ResourceExhausted: If the API keeps
+                returning 429 rate-limit errors after the retry budget is
+                exhausted.
 
         Example:
             ```python
@@ -163,11 +175,17 @@ class GCBatchClient:
         """
         self.client.cancel_job(name=job_name)
 
+    @retry_on_rate_limit
     def _list_jobs(
         self, filter_string: str | None = None, page_size: int = 100
     ) -> list[GCSBatchJob]:
         """
         List Batch jobs with optional filtering by labels or other criteria.
+
+        Retries with exponential backoff when the Batch API returns a
+        rate-limit (429) error, since this method is called by pollers.
+        See ``gc_batch.retry`` for the tunable ``GC_BATCH_RETRY_*``
+        environment variables.
 
         Args:
             filter_string: Optional filter string to apply to the job list
@@ -175,6 +193,11 @@ class GCBatchClient:
 
         Returns:
             List of Batch jobs matching the filter criteria
+
+        Raises:
+            google.api_core.exceptions.ResourceExhausted: If the API keeps
+                returning 429 rate-limit errors after the retry budget is
+                exhausted.
         """
         try:
             request = batch_v1.ListJobsRequest(
