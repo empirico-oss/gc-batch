@@ -21,6 +21,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `GC_BATCH_RETRY_MAX_DELAY_SECONDS`, `GC_BATCH_RETRY_TIMEOUT_SECONDS`, and
   `GC_BATCH_RETRY_MAX_ATTEMPTS` — so pollers with their own quota budget (for
   example remotely's batch backend) can tune the backoff without code changes.
+  The decorator can also be parameterized directly —
+  `@retry_on_rate_limit(timeout=400, initial_delay=3, max_delay=90,
+  max_attempts=15)` — with explicit arguments taking precedence over the
+  environment variables, which take precedence over the built-in defaults;
+  invalid (non-positive) arguments raise `ValueError` at decoration time.
 
 ## [0.2.0]
 
