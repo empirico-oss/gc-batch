@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Automatic retry with exponential backoff when the Batch API returns a
+  rate-limit error (`429 ResourceExhausted`, e.g. the "Read requests per
+  minute per region" quota). `GCBatchClient.get_job` and `list_jobs` — the
+  methods job-status pollers call — now back off with jittered waits that
+  start at a few seconds, grow to at most a minute, and give up after roughly
+  five minutes, re-raising the original `ResourceExhausted` if the quota is
+  still exhausted then. Other errors (permission failures, invalid filters,
+  …) are not retried. The new `gc_batch.retry` module exposes the knobs as
+  environment variables — `GC_BATCH_RETRY_INITIAL_DELAY_SECONDS`,
+  `GC_BATCH_RETRY_MAX_DELAY_SECONDS`, `GC_BATCH_RETRY_TIMEOUT_SECONDS`, and
+  `GC_BATCH_RETRY_MAX_ATTEMPTS` — so pollers with their own quota budget (for
+  example remotely's batch backend) can tune the backoff without code changes.
+  The decorator can also be parameterized directly —
+  `@retry_on_rate_limit(timeout=400, initial_delay=3, max_delay=90,
+  max_attempts=15)` — with explicit arguments taking precedence over the
+  environment variables, which take precedence over the built-in defaults;
+  invalid (non-positive) arguments raise `ValueError` at decoration time.
+- The same 429 retry now covers gc-batch's remaining read requests: Cloud
+  Logging queries (`BatchLogging._query_cloud_logs`, which backs `logs print`,
+  `logs download`, the instance-ID lookup, and the failed-job log probe used
+  while polling) and GCS log reads (`GCSLogReader` object listing and
+  downloads). The Batch API write calls (`create_job`, `cancel_job`) are
+  intentionally not retried, so submission failures surface immediately.
+
 ## [0.2.0]
 
 First public release.

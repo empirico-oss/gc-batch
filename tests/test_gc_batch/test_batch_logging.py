@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from unittest.mock import MagicMock, Mock, mock_open, patch
 
 import pytest
-from google.api_core.exceptions import PermissionDenied
+from google.api_core.exceptions import PermissionDenied, ResourceExhausted
 from google.cloud import batch_v1
 from google.cloud import logging as cloud_logging
 from google.cloud.batch_v1.types import Job as GCSBatchJob
@@ -810,3 +810,50 @@ class TestPrintLogsForJobWithTimeRange:
         batch_logging_instance.print_logs_for_job_with_time_range(mock_job, severity="WARNING")
 
         batch_logging_instance.print_logs_for_job.assert_called_once_with(mock_job, "WARNING")
+
+
+class TestQueryCloudLogsRateLimitRetry:
+    """Cloud Logging reads retry with backoff on 429 quota errors.
+
+    Every Cloud Logging read in gc-batch — print/download logs, the
+    instance-ID lookup, and the failed-job log probe — funnels through
+    ``_query_cloud_logs``, so decorating it covers them all.
+    """
+
+    def test_query_cloud_logs_retries_after_429(self, batch_logging_instance, retry_sleeps):
+        batch_logging_instance.cloud_logging_client.list_entries = MagicMock(
+            side_effect=[ResourceExhausted("429 quota exceeded"), iter([])]
+        )
+
+        result = batch_logging_instance._query_cloud_logs("severity>=DEFAULT")
+
+        assert result == []
+        assert batch_logging_instance.cloud_logging_client.list_entries.call_count == 2
+        assert len(retry_sleeps) == 1
+
+    def test_query_cloud_logs_reraises_when_quota_never_clears(
+        self, batch_logging_instance, retry_sleeps
+    ):
+        batch_logging_instance.cloud_logging_client.list_entries = MagicMock(
+            side_effect=ResourceExhausted("429 quota exceeded")
+        )
+
+        with pytest.raises(ResourceExhausted):
+            batch_logging_instance._query_cloud_logs("severity>=DEFAULT")
+
+        # The default attempt cap is 12: one initial call plus 11 retries.
+        assert batch_logging_instance.cloud_logging_client.list_entries.call_count == 12
+        assert len(retry_sleeps) == 11
+
+    def test_query_cloud_logs_does_not_retry_other_errors(
+        self, batch_logging_instance, retry_sleeps
+    ):
+        batch_logging_instance.cloud_logging_client.list_entries = MagicMock(
+            side_effect=PermissionDenied("403")
+        )
+
+        with pytest.raises(PermissionDenied):
+            batch_logging_instance._query_cloud_logs("severity>=DEFAULT")
+
+        assert batch_logging_instance.cloud_logging_client.list_entries.call_count == 1
+        assert retry_sleeps == []
