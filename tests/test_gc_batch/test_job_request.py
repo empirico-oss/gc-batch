@@ -94,9 +94,12 @@ class TestApplyProfile:
         """The shipped profile is applied exactly as the CLI applies it."""
         profile = GCBatchSettings().job_profiles["all-of-us"]
 
-        with patch(
-            "gc_batch.models.job_request.get_current_account",
-            return_value="researcher@researchallofus.org",
+        with (
+            patch(
+                "gc_batch.models.job_request.get_current_account",
+                return_value="researcher@researchallofus.org",
+            ),
+            patch("gc_batch.models.job_request.get_current_region", return_value=None),
         ):
             config = _config().apply_profile(profile)
 
@@ -105,3 +108,65 @@ class TestApplyProfile:
         assert config.use_private_address is True
         assert config.regions == ["us-central1"]
         assert config.service_account == "researcher@researchallofus.org"
+
+
+class TestApplyProfileRegion:
+    _REGIONAL = JobProfile(
+        subnetwork="regions/{region}/subnetworks/subnetwork",
+        regions=["us-central1"],
+        region_from_environment=True,
+    )
+
+    def test_detected_region_fills_regions_and_subnetwork(self):
+        with patch("gc_batch.models.job_request.get_current_region", return_value="us-east1"):
+            config = _config().apply_profile(self._REGIONAL)
+
+        assert config.regions == ["us-east1"]
+        assert config.subnetwork == "regions/us-east1/subnetworks/subnetwork"
+
+    def test_falls_back_to_profile_regions_when_detection_fails(self):
+        with patch("gc_batch.models.job_request.get_current_region", return_value=None):
+            config = _config().apply_profile(self._REGIONAL)
+
+        assert config.regions == ["us-central1"]
+        assert config.subnetwork == "regions/us-central1/subnetworks/subnetwork"
+
+    def test_explicit_region_overrides_detection(self):
+        with patch("gc_batch.models.job_request.get_current_region") as detect:
+            config = _config().apply_profile(self._REGIONAL, region="europe-west4")
+
+        detect.assert_not_called()
+        assert config.regions == ["europe-west4"]
+        assert config.subnetwork == "regions/europe-west4/subnetworks/subnetwork"
+
+    def test_explicit_region_overrides_non_detecting_profile(self):
+        profile = JobProfile(regions=["us-central1"])
+
+        config = _config().apply_profile(profile, region="us-west1")
+
+        assert config.regions == ["us-west1"]
+
+    def test_no_detection_unless_profile_requests_it(self):
+        with patch("gc_batch.models.job_request.get_current_region") as detect:
+            config = _config().apply_profile(JobProfile(regions=["us-west1"]))
+
+        detect.assert_not_called()
+        assert config.regions == ["us-west1"]
+
+    def test_raises_when_placeholder_has_no_region(self):
+        profile = JobProfile(subnetwork="regions/{region}/subnetworks/subnetwork")
+
+        with pytest.raises(ValueError, match="needs a region"):
+            _config().apply_profile(profile)
+
+    def test_built_in_all_of_us_profile_follows_the_workspace_region(self):
+        profile = GCBatchSettings().job_profiles["all-of-us"]
+
+        with (
+            patch("gc_batch.models.job_request.get_current_account", return_value="me@x.org"),
+            patch("gc_batch.models.job_request.get_current_region", return_value="us-east4"),
+        ):
+            config = _config().apply_profile(profile)
+
+        assert config.regions == ["us-east4"]
+        assert config.subnetwork == "regions/us-east4/subnetworks/subnetwork"

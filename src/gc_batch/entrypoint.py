@@ -29,7 +29,9 @@ from gc_batch.models.job_request import (
     MachineTypeHelper,
 )
 from gc_batch.settings import GCBatchSettings
-from gc_batch.utils import get_gc_batch_version, resolve_created_by_label
+from gc_batch.utils import get_current_region, get_gc_batch_version, resolve_created_by_label
+
+DEFAULT_LOCATION = "us-central1"
 
 
 def create_client(location: str, project_id: str, settings: GCBatchSettings) -> GCBatchClient:
@@ -97,7 +99,16 @@ def click_centered_header(message: str):
 
 @click.group()
 @click.version_option(version=get_gc_batch_version(), prog_name="gc-batch")
-@click.option("--location", default="us-central1", help="GCP location")
+@click.option(
+    "--location",
+    default=None,
+    help=(
+        "GCP location (region) of the Batch jobs. Default: the region of the machine "
+        "gc-batch runs on (from the GCE metadata server, then gcloud's compute/region), "
+        f"else {DEFAULT_LOCATION}. For `create --job-profile`, a region the profile "
+        "sets takes precedence over the detected one."
+    ),
+)
 @click.option("--project-id", default="", help="GCP project ID")
 @click.option(
     "--config-file",
@@ -109,7 +120,7 @@ def click_centered_header(message: str):
     ),
 )
 @click.pass_context
-def cli(ctx, location: str, project_id: str, config_file: str | None):
+def cli(ctx, location: str | None, project_id: str, config_file: str | None):
     """Google Cloud Batch Job Management CLI"""
     ctx.ensure_object(dict)
     settings = GCBatchSettings.load(config_file=config_file)
@@ -121,9 +132,32 @@ def cli(ctx, location: str, project_id: str, config_file: str | None):
     if not resolved_project_id:
         resolved_project_id = settings.default_project_id
 
-    ctx.obj["location"] = location
+    ctx.obj["location_override"] = location
     ctx.obj["project_id"] = resolved_project_id
     ctx.obj["settings"] = settings
+
+
+def _detected_region(ctx) -> str | None:
+    """Detect the region of the machine gc-batch runs on, once per invocation.
+
+    Announces the detected region on stderr so a job that "disappears" because it
+    lives in another region is easy to explain.
+    """
+    if "detected_region" not in ctx.obj:
+        region = get_current_region()
+        if region:
+            click.echo(f"Detected region: {region} (pass --location to override)", err=True)
+        ctx.obj["detected_region"] = region
+    return ctx.obj["detected_region"]
+
+
+def _resolve_location(ctx) -> str:
+    """Return the Batch location: ``--location``, else the detected region, else the default.
+
+    Resolved lazily rather than in the group callback so that ``--help`` and
+    ``show-config`` never pay for detection.
+    """
+    return ctx.obj["location_override"] or _detected_region(ctx) or DEFAULT_LOCATION
 
 
 def _require_project_id(ctx) -> str:
@@ -156,6 +190,15 @@ def _require_project_id(ctx) -> str:
         "Name of a configured job profile to apply (e.g. networking and service "
         "account settings). No profile is applied by default. Available profiles "
         "come from settings.job_profiles (built-in: 'all-of-us')."
+    ),
+)
+@click.option(
+    "--location",
+    "create_location",
+    default=None,
+    help=(
+        "Region to create the job and run its VMs in. Same as the global --location; "
+        "overrides any region the job profile sets or detects."
     ),
 )
 @click.option("--args", default="", help="Command arguments")
@@ -227,6 +270,7 @@ def create(
     command: str,
     args: str,
     job_profile: str | None,
+    create_location: str | None,
     labels: str,
     task_count: int,
     parallelism: int,
@@ -247,7 +291,8 @@ def create(
     provisioning_model: str | None,
 ):
     """Create a new Batch job."""
-    client = create_client(ctx.obj["location"], _require_project_id(ctx), ctx.obj["settings"])
+    project_id = _require_project_id(ctx)
+    location_override = create_location or ctx.obj["location_override"]
 
     # Parse labels if provided. The "created-by" label is set by the client.
     labels_dict = parse_labels(labels) if labels else None
@@ -307,8 +352,18 @@ def create(
             sys.exit(1)
 
         click.echo(f"Applying job profile: {job_profile}")
+        region = location_override
+        if region is None and profile.region_from_environment:
+            region = _detected_region(ctx)
+            if region is None and profile.regions:
+                region = profile.regions[0]
+                click.echo(
+                    f"⚠️  Could not detect the region; using the profile default {region}. "
+                    "Pass --location if your workspace is in another region.",
+                    err=True,
+                )
         try:
-            job_config.apply_profile(profile)
+            job_config.apply_profile(profile, region=region)
         except ValueError as error:
             click.echo(f"❌ {error}", err=True)
             sys.exit(1)
@@ -335,6 +390,16 @@ def create(
 
         if profile.service_account_from_gcloud:
             click.echo(f"Current account: {job_config.service_account}")
+
+    # The job lives in the region its VMs run in: a profile's subnetwork is
+    # regional, so a job in another location could not use it.
+    if location_override:
+        location = location_override
+    elif job_config.regions:
+        location = job_config.regions[0]
+    else:
+        location = _resolve_location(ctx)
+    client = create_client(location, project_id, ctx.obj["settings"])
 
     # Create job request
     job_request = JobRequest(
@@ -399,7 +464,7 @@ def create(
 @click.pass_context
 def list_jobs(ctx, labels: str, name: str, since: str, status: str, page_size: int):
     """List Batch jobs with optional filtering by labels, name, time, and status."""
-    client = create_client(ctx.obj["location"], _require_project_id(ctx), ctx.obj["settings"])
+    client = create_client(_resolve_location(ctx), _require_project_id(ctx), ctx.obj["settings"])
     labels_dict = None
     since_time = None
     name_filter = None
@@ -479,7 +544,7 @@ def list_jobs(ctx, labels: str, name: str, since: str, status: str, page_size: i
 @click.pass_context
 def list_my_jobs(ctx, page_size: int, since: str, status: str):
     """List jobs created by the current user with optional filtering by time and status."""
-    client = create_client(ctx.obj["location"], _require_project_id(ctx), ctx.obj["settings"])
+    client = create_client(_resolve_location(ctx), _require_project_id(ctx), ctx.obj["settings"])
     created_by = resolve_created_by_label(ctx.obj["settings"].owner_email_env_vars)
     labels_dict = {"created-by": created_by}
     since_time = None
@@ -536,7 +601,7 @@ def list_my_jobs(ctx, page_size: int, since: str, status: str):
 @click.pass_context
 def status(ctx, job_name: str, full: bool):
     """Get status of a specific job."""
-    client = create_client(ctx.obj["location"], _require_project_id(ctx), ctx.obj["settings"])
+    client = create_client(_resolve_location(ctx), _require_project_id(ctx), ctx.obj["settings"])
 
     try:
         job = client.get_job(job_name)
@@ -634,7 +699,7 @@ def logs(
 ):
     """View logs for a specific job."""
 
-    client = create_client(ctx.obj["location"], _require_project_id(ctx), ctx.obj["settings"])
+    client = create_client(_resolve_location(ctx), _require_project_id(ctx), ctx.obj["settings"])
 
     if not job_name:
         click.echo("❌ --job_name must be provided")
@@ -700,7 +765,7 @@ def show_config(ctx):
 @click.pass_context
 def cancel(ctx, job_name: str):
     """Delete a Batch job."""
-    client = create_client(ctx.obj["location"], _require_project_id(ctx), ctx.obj["settings"])
+    client = create_client(_resolve_location(ctx), _require_project_id(ctx), ctx.obj["settings"])
 
     try:
         # First get the job to confirm it exists

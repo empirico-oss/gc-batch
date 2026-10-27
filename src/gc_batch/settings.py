@@ -44,9 +44,15 @@ class JobProfile(BaseModel):
 
     Attributes:
         network: VPC network path for the VM (e.g. "global/networks/network").
-        subnetwork: Subnetwork path for the VM.
+        subnetwork: Subnetwork path for the VM. May contain a ``{region}``
+            placeholder, filled in with the region the job is placed in.
         use_private_address: Whether to use a private IP (no external IP).
-        regions: List of allowed regions for job placement.
+        regions: List of allowed regions for job placement. When the region is
+            given explicitly or detected from the environment, it replaces this
+            list; otherwise this list is used as-is.
+        region_from_environment: Whether to detect the job's region from the
+            machine gc-batch runs on (see :func:`gc_batch.utils.get_current_region`),
+            falling back to ``regions`` when detection fails.
         service_account_from_gcloud: Whether to resolve the job's service account
             from the current ``gcloud`` authenticated account.
         cloud_logging_unreadable: Whether callers in this environment are expected
@@ -60,6 +66,7 @@ class JobProfile(BaseModel):
     subnetwork: str | None = None
     use_private_address: bool = False
     regions: list[str] | None = None
+    region_from_environment: bool = False
     service_account_from_gcloud: bool = False
     cloud_logging_unreadable: bool = False
 
@@ -73,9 +80,12 @@ def _built_in_job_profiles() -> dict[str, JobProfile]:
     return {
         "all-of-us": JobProfile(
             network="global/networks/network",
-            subnetwork="regions/us-central1/subnetworks/subnetwork",
+            subnetwork="regions/{region}/subnetworks/subnetwork",
             use_private_address=True,
+            # Workspaces can be created in different regions; the notebook VM runs
+            # in the workspace's region. us-central1 is the fallback (and default).
             regions=["us-central1"],
+            region_from_environment=True,
             service_account_from_gcloud=True,
             # Workspace service accounts have no Cloud Logging read access, so a
             # job that writes there produces logs nobody in the workspace can read.

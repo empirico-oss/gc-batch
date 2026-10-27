@@ -1,11 +1,12 @@
+import urllib.error
 from datetime import datetime, timedelta, timezone
-from unittest.mock import Mock
+from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 from google.cloud.batch_v1.types import Job as GCSBatchJob
 from google.cloud.batch_v1.types import JobStatus
 
-from gc_batch.utils import get_formatted_start_and_end_time
+from gc_batch.utils import get_current_region, get_formatted_start_and_end_time
 
 
 @pytest.fixture
@@ -296,3 +297,70 @@ class TestGetFormattedStartAndEndTime:
         # Should use start_time + 1 hour since it's just under 20 minutes
         expected_end = (job.create_time + timedelta(hours=1)).isoformat()
         assert end_time == expected_end
+
+
+def _metadata_response(body: str) -> MagicMock:
+    response = MagicMock()
+    response.__enter__.return_value.read.return_value = body.encode()
+    return response
+
+
+class TestGetCurrentRegion:
+    @pytest.fixture(autouse=True)
+    def _isolated_gcloud_config(self, tmp_path, monkeypatch):
+        """Point gcloud at an empty config dir so the developer's own config is ignored."""
+        for var in ("CLOUDSDK_COMPUTE_REGION", "CLOUDSDK_ACTIVE_CONFIG_NAME"):
+            monkeypatch.delenv(var, raising=False)
+        monkeypatch.setenv("CLOUDSDK_CONFIG", str(tmp_path))
+        self.config_dir = tmp_path
+
+    @pytest.fixture
+    def no_metadata_server(self):
+        with patch(
+            "gc_batch.utils.urllib.request.urlopen",
+            side_effect=urllib.error.URLError("no metadata server"),
+        ):
+            yield
+
+    def _write_config(self, name: str, region: str) -> None:
+        (self.config_dir / "configurations").mkdir(exist_ok=True)
+        (self.config_dir / "configurations" / f"config_{name}").write_text(
+            f"[core]\naccount = me@x.org\n\n[compute]\nregion = {region}\n"
+        )
+
+    def test_region_from_metadata_server_zone(self):
+        self._write_config("default", "europe-west4")
+        with patch(
+            "gc_batch.utils.urllib.request.urlopen",
+            return_value=_metadata_response("projects/123/zones/us-east1-b"),
+        ):
+            assert get_current_region() == "us-east1"
+
+    @pytest.mark.usefixtures("no_metadata_server")
+    def test_falls_back_to_active_gcloud_configuration(self):
+        self._write_config("default", "us-central1")
+        self._write_config("work", "europe-west4")
+        (self.config_dir / "active_config").write_text("work")
+
+        assert get_current_region() == "europe-west4"
+
+    @pytest.mark.usefixtures("no_metadata_server")
+    def test_default_configuration_when_none_is_active(self):
+        self._write_config("default", "us-west1")
+
+        assert get_current_region() == "us-west1"
+
+    @pytest.mark.usefixtures("no_metadata_server")
+    def test_environment_variables_win(self, monkeypatch):
+        self._write_config("default", "us-west1")
+        self._write_config("other", "asia-east1")
+        monkeypatch.setenv("CLOUDSDK_ACTIVE_CONFIG_NAME", "other")
+
+        assert get_current_region() == "asia-east1"
+
+        monkeypatch.setenv("CLOUDSDK_COMPUTE_REGION", "us-east4")
+        assert get_current_region() == "us-east4"
+
+    def test_none_when_nothing_is_available(self):
+        with patch("gc_batch.utils.urllib.request.urlopen", side_effect=OSError("timed out")):
+            assert get_current_region() is None

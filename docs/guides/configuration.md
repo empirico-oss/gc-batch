@@ -7,7 +7,7 @@ gc-batch uses sensible defaults but allows you to override settings via command-
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Location | `us-central1` | GCP region for Batch jobs |
+| Location | Detected region, else `us-central1` | GCP region for Batch jobs |
 | Project ID | _none_ | GCP project, from `--project-id`, `$GOOGLE_PROJECT`, or the `default_project_id` setting. Required. |
 | Machine Type | `e2-standard-2` | VM machine type |
 | Boot Disk Size | `30` GB | Size of the boot disk |
@@ -191,6 +191,12 @@ use_private_address = true
 regions             = ["us-central1"]
 ```
 
+A profile's `subnetwork` may contain a `{region}` placeholder. It is filled in with
+the job's region: `--location` if given, else the detected region if
+`region_from_environment = true`, else the first entry of `regions`. When a profile
+sets `regions`, `create` places the job in the first one unless `--location` is
+given.
+
 Run the config-display command to see the resolved settings and debug precedence.
 
 
@@ -207,9 +213,11 @@ available profiles.
 a restricted VPC. `--job-profile all-of-us` applies:
 
 - `network` = `global/networks/network`
-- `subnetwork` = `regions/us-central1/subnetworks/subnetwork`
+- `subnetwork` = `regions/{region}/subnetworks/subnetwork`
 - `use_private_address` = `true`
-- `regions` = `["us-central1"]`
+- `regions` = `["us-central1"]`, used only if the region cannot be detected
+- `region_from_environment` = `true`: the region is your workspace's, detected from
+  the notebook VM
 - `service_account` taken from your current `gcloud` authentication
 - `cloud_logging_unreadable` = `true`
 
@@ -220,6 +228,16 @@ gc-batch --project-id my-project create \
   --docker-image gcr.io/my-project/my-image:latest \
   --command "python /app/main.py"
 ```
+
+Workspaces can be created in different regions. gc-batch detects the region the
+notebook VM runs in. `create` uses it for the job's location, its allowed region,
+and the `{region}` in the subnetwork. `list-jobs`, `list-my-jobs`, `status`, `logs`
+and `cancel` use it too, so they find the jobs without `--location`. Detection asks the GCE metadata server, then falls back
+to `gcloud config get-value compute/region`. If both fail, it warns and uses
+`us-central1`. To choose the region yourself, pass `--location`, either globally
+(`gc-batch --location us-east1 create ...`) or on `create`
+(`gc-batch create --location us-east1 ...`). `--location` takes precedence over the
+detected region.
 
 !!! warning "Set `--logs-bucket` in the All of Us workbench"
     Workspace service accounts cannot read Cloud Logging, so a job that writes its

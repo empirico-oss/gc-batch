@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- The `all-of-us` job profile now detects the workspace's region from the
+  notebook VM instead of always using `us-central1`, so it works in workspaces
+  created in other regions. If the region cannot be detected, `create` warns and
+  falls back to `us-central1`.
+- `JobProfile.region_from_environment` and a `{region}` placeholder in
+  `JobProfile.subnetwork`, so custom profiles can do the same.
+- `create --location`, and `BatchJobConfig.apply_profile(profile, region=...)`,
+  to choose the job's region over the profile's. The global `--location` does the
+  same for `create`.
+
+### Changed
+
+- When `--location` is not given, every command now uses the region of the
+  machine it runs on: the GCE metadata server first, then gcloud's
+  `compute/region`, else `us-central1` as before. It prints the detected region
+  to stderr. This changes the default for anyone on a GCE VM outside
+  `us-central1`, or with `compute/region` set in gcloud.
+- With `--job-profile`, `create` places the job in the profile's region unless
+  `--location` is given; it used to be created in `us-central1` regardless.
+
 ## [0.2.0]
 
 First public release.

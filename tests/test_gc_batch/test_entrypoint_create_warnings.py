@@ -32,9 +32,12 @@ def _invoke(runner: CliRunner, *extra: str):
         client.get_cloud_logging_url.return_value = "https://console.example/logs"
         mock_create_client.return_value = client
         # The gcloud account is resolved inside BatchJobConfig.apply_profile.
-        with patch(
-            "gc_batch.models.job_request.get_current_account",
-            return_value="me@example.com",
+        with (
+            patch(
+                "gc_batch.models.job_request.get_current_account",
+                return_value="me@example.com",
+            ),
+            patch("gc_batch.entrypoint.get_current_region", return_value=None),
         ):
             return runner.invoke(
                 cli,

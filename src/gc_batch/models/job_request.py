@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, field_validator
 
 from gc_batch.constants import BatchProvisioningModel, Constants, CustomStrEnum
 from gc_batch.settings import JobProfile
-from gc_batch.utils import get_current_account
+from gc_batch.utils import get_current_account, get_current_region
 
 
 class BatchBootDiskType(CustomStrEnum):
@@ -326,23 +326,30 @@ class BatchJobConfig(BaseModel):
             return BatchBootDiskType(v)
         return v
 
-    def apply_profile(self, profile: JobProfile) -> "BatchJobConfig":
+    def apply_profile(self, profile: JobProfile, region: str | None = None) -> "BatchJobConfig":
         """Apply a job profile's networking and VM settings to this config.
 
         This is what ``gc-batch create --job-profile`` does, exposed for library
         callers. Fields the profile leaves unset are left untouched, so a profile
         can be applied over a config that already has other settings.
 
+        The job's region is, in order: ``region`` if given, the detected region
+        if the profile sets ``region_from_environment``, then the profile's
+        ``regions``. A ``{region}`` placeholder in the profile's subnetwork is
+        filled in with the first of these that is set.
+
         Args:
             profile: The :class:`~gc_batch.settings.JobProfile` to apply, usually
                 taken from ``settings.job_profiles[name]``.
+            region: Region to place the job in, overriding the profile's.
 
         Returns:
             This config, mutated in place, to allow chaining after construction.
 
         Raises:
             ValueError: If the profile sets ``service_account_from_gcloud`` but no
-                authenticated ``gcloud`` account could be resolved.
+                authenticated ``gcloud`` account could be resolved, or its
+                subnetwork has a ``{region}`` placeholder but no region is known.
 
         Example:
             ```python
@@ -355,12 +362,21 @@ class BatchJobConfig(BaseModel):
             ).apply_profile(settings.job_profiles["all-of-us"])
             ```
         """
+        if region is None and profile.region_from_environment:
+            region = get_current_region()
+        regions = [region] if region else profile.regions
+
         if profile.network is not None:
             self.network = profile.network
         if profile.subnetwork is not None:
-            self.subnetwork = profile.subnetwork
-        if profile.regions is not None:
-            self.regions = profile.regions
+            if "{region}" in profile.subnetwork and not regions:
+                raise ValueError(
+                    f"The job profile's subnetwork '{profile.subnetwork}' needs a "
+                    "region, but none was given, detected, or set in the profile."
+                )
+            self.subnetwork = profile.subnetwork.replace("{region}", regions[0] if regions else "")
+        if regions is not None:
+            self.regions = regions
         self.use_private_address = profile.use_private_address
 
         if profile.service_account_from_gcloud:
