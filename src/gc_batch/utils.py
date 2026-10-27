@@ -4,9 +4,13 @@ This module provides helper functions for working with Google Cloud Batch jobs,
 including authentication utilities, time formatting, and job state checking.
 """
 
+import configparser
 import os
 import subprocess
+import urllib.error
+import urllib.request
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 
 from google.auth import default
 from google.auth.exceptions import DefaultCredentialsError
@@ -67,6 +71,66 @@ def get_current_account() -> str | None:
     except DefaultCredentialsError as e:
         print(f"DEBUG: google.auth.default() failed: {e}")
         return None
+
+
+_METADATA_ZONE_URL = "http://metadata.google.internal/computeMetadata/v1/instance/zone"
+
+
+def get_current_region() -> str | None:
+    """Get the GCP region of the machine gc-batch is running on.
+
+    Asks the GCE metadata server for the current VM's zone (e.g.
+    ``projects/123/zones/us-east1-b``) and strips the zone suffix. In the All of
+    Us Researcher Workbench the notebook VM runs in the workspace's region, so
+    this is the region jobs must be placed in. Falls back to the
+    ``compute/region`` property of the active ``gcloud`` configuration when the
+    metadata server is unreachable (i.e. when not running on GCE).
+
+    Every command calls this when ``--location`` is not given, so it avoids
+    running ``gcloud`` (which takes most of a second) and reads its config files.
+
+    Returns:
+        The region name (e.g. "us-east1"), or None if it could not be determined.
+    """
+    request = urllib.request.Request(_METADATA_ZONE_URL, headers={"Metadata-Flavor": "Google"})
+    try:
+        with urllib.request.urlopen(request, timeout=2) as response:
+            zone = response.read().decode().strip().rsplit("/", 1)[-1]
+        if zone.count("-") >= 2:
+            return zone.rsplit("-", 1)[0]
+    except (urllib.error.URLError, OSError):
+        pass
+
+    return _gcloud_compute_region()
+
+
+def _gcloud_compute_region() -> str | None:
+    """Read ``compute/region`` the way ``gcloud config get-value`` resolves it.
+
+    Honors ``$CLOUDSDK_COMPUTE_REGION``, ``$CLOUDSDK_CONFIG`` and
+    ``$CLOUDSDK_ACTIVE_CONFIG_NAME``, then the active named configuration file.
+
+    Returns:
+        The configured region, or None if it is unset or unreadable.
+    """
+    region = os.getenv("CLOUDSDK_COMPUTE_REGION")
+    if region:
+        return region
+
+    config_dir = Path(os.getenv("CLOUDSDK_CONFIG") or Path.home() / ".config" / "gcloud")
+    try:
+        active = os.getenv("CLOUDSDK_ACTIVE_CONFIG_NAME") or (
+            (config_dir / "active_config").read_text().strip()
+        )
+    except OSError:
+        active = "default"
+
+    parser = configparser.ConfigParser()
+    try:
+        parser.read(config_dir / "configurations" / f"config_{active or 'default'}")
+    except configparser.Error:
+        return None
+    return parser.get("compute", "region", fallback=None) or None
 
 
 def resolve_created_by_label(owner_email_env_vars: list[str]) -> str:

@@ -12,9 +12,15 @@ All commands support these global options:
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--location` | GCP location | `us-central1` |
+| `--location` | GCP location (region) | The detected region of the machine you run on, else `us-central1` (see below) |
 | `--project-id` | GCP project ID (or `$GOOGLE_PROJECT`, or `default_project_id`) | `my-project` |
 
+
+When `--location` is not given, every command uses the region of the machine it
+runs on. It asks the GCE metadata server first, then uses
+`gcloud config get-value compute/region`, and prints `Detected region: ...` to
+stderr. If neither is available, it uses `us-central1`. For `create --job-profile`,
+a region set by the profile takes precedence over the detected one.
 
 ## create
 

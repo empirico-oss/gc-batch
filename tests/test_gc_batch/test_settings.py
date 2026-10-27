@@ -22,16 +22,17 @@ class TestNeutralDefaults:
 
 
 class TestBuiltInJobProfiles:
-    def test_all_of_us_profile_matches_exact_original_values(self):
+    def test_all_of_us_profile_values(self):
         settings = GCBatchSettings()
 
         profile = settings.job_profiles["all-of-us"]
 
         assert profile == JobProfile(
             network="global/networks/network",
-            subnetwork="regions/us-central1/subnetworks/subnetwork",
+            subnetwork="regions/{region}/subnetworks/subnetwork",
             use_private_address=True,
             regions=["us-central1"],
+            region_from_environment=True,
             service_account_from_gcloud=True,
             cloud_logging_unreadable=True,
         )
